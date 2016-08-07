@@ -16,21 +16,11 @@
     </h1>
   </header>
 
-  <h1>Posts for {{tag}}</h1>
+  <h1 class="post-header">Posts about {{tag}}</h1>
 
-  {{#pagination.files as |file|}}
-    <a href="/{{file.path}}">{{ file.title }}</a>
-    excerpt: {{{ file.less }}}
+  {{>posts}}
 
-  {{/pagination.files}}
-
-  {{#if pagination.previous}}
-    <a href="/{{pagination.previous.path}}">Newer</a>
-  {{/if}}
-
-  {{#if pagination.next}}
-    <a href="/{{pagination.next.path}}">Older</a>
-  {{/if}}
+  {{>nav}}
 
 </body>
 </html>

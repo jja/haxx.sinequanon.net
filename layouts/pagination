@@ -11,24 +11,14 @@
   <header>
     <h1>
       <span class="header-span">
-        <a style="color: black; text-decoration: none;" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
+        <a class="plain" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
       </span>
     </h1>
   </header>
 
-  {{#pagination.files as |file|}}
-    <a href="/{{file.path}}">{{ file.title }}</a>
-    excerpt: {{{ file.less }}}
+  {{>posts}}
 
-  {{/pagination.files}}
-
-  {{#if pagination.previous}}
-    <a href="/{{pagination.previous.path}}">Newer</a>
-  {{/if}}
-
-  {{#if pagination.next}}
-    <a href="/{{pagination.next.path}}">Older</a>
-  {{/if}}
+  {{>nav}}
 
 </body>
 </html>

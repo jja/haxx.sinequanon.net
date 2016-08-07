@@ -1,0 +1,13 @@
+<section id="posts">
+    <ul id="postlist">
+
+      {{#pagination.files}}
+        <li class="postitem"><h2><a href="/{{path}}">{{title}}</a></h2>
+          {{>date}}
+          {{{less}}}
+          <a href="/{{path}}">(read more)</a>
+        </li>
+
+      {{/pagination.files}}
+    </ul>
+</section>

@@ -16,11 +16,34 @@
     </h1>
   </header>
 
-  <h1>{{ title }}</h1>
+  <article>
 
-  <div id="byline">{{ author }} <time>{{ date }}</time></div>
+      <h1>{{ title }}</h1>
 
-  {{{ contents }}}
+      <section id="meta">
+
+          <div id="byline">
+            by {{ author }}
+            on <time datetime="{{>datetime}}">{{>date}}</time>
+          </div>
+
+          Topics: <ul id="tags">
+            {{#tags as |tag|}}
+              <li class="tagitem">
+                <a class="tag" href="/tag/{{ tag }}">{{ tag }}</a>
+              </li>
+            {{/tags}}
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        {{{ contents }}}
+
+      </section>
+
+  </article>
 
   <div id="comment-form">
     {{#if comments}}
@@ -29,17 +52,27 @@
     {{/if}}
   </div>
 
-  <div id="tags" class="tags">
-    {{#tags as |tag|}}
-        <a class="tag" href="/tag/{{ tag }}">{{ tag }}</a>
-    {{/tags}}
-  </div>
+  <section id="nav">
+    {{#if previous}}
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/{{previous.path}}">{{previous.title}}</a>
+      </span>
+    {{/if}}
 
-  <div id="footer">
-    <a href="/{{ previous.path }}">{{previous.title}}</a>
-    <a href="/{{ next.path }}">{{next.title}}</a>
-    Home: <a rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
-  </div>
+    {{#if next}}
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/{{next.path}}">{{next.title}}</a>
+      </span>
+    {{/if}}
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="{{ siteurl }}">Home</a>
+    </span>
+  </footer>
 
 </body>
 </html>

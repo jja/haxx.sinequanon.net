@@ -9,6 +9,10 @@ var collections = require('metalsmith-collections');
 var more        = require('metalsmith-more');
 var tags        = require('metalsmith-tags');
 
+var Handlebars  = require('handlebars');
+
+Handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
+
 Metalsmith(__dirname)
   .metadata({
     sitetitle: "haxx qua non",
@@ -57,6 +61,7 @@ Metalsmith(__dirname)
   .use(layouts({
     engine: 'handlebars',
     default: 'post',
+    partials: 'layouts',
   }))
   .use(assets({
     source: './static',
