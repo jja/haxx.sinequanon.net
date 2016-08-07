@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ sitetitle }} - {{ title }}</title>
+  <meta name="description" content="{{ sitedescription }}">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
+      </span>
+    </h1>
+  </header>
+
+  <h1>{{ title }}</h1>
+
+  <div id="byline">{{ author }} <time>{{ date }}</time></div>
+
+  {{{ contents }}}
+
+  <div id="comment-form">
+    {{#if comments}}
+    {{else}}
+        (comments are closed)
+    {{/if}}
+  </div>
+
+  <div id="tags" class="tags">
+    {{#tags as |tag|}}
+        <a class="tag" href="/tag/{{ tag }}">{{ tag }}</a>
+    {{/tags}}
+  </div>
+
+  <div id="footer">
+    <a href="/{{ previous.path }}">{{previous.title}}</a>
+    <a href="/{{ next.path }}">{{next.title}}</a>
+    Home: <a rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
+  </div>
+
+</body>
+</html>

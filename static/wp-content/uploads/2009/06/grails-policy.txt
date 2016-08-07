@@ -1,0 +1,118 @@
+// common permissions for many frameworks
+grant {
+    // jsp
+    permission java.lang.RuntimePermission "defineClassInPackage.java.lang";
+    permission java.lang.RuntimePermission "defineClassInPackage.org.apache.jasper.runtime";
+
+    // jsp,struts,groovy,etc
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.catalina";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.coyote";
+
+    // commons-beanutils, commons-digester, struts, and *every* jira and groovy/grails class
+        // sigh, cf. https://www.securecoding.cert.org/confluence/display/java/SEC32-J.+Do+not+grant+ReflectPermission+with+action+suppressAccessChecks
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+
+    // config
+    permission java.util.PropertyPermission "catalina.base", "read";
+
+    // logging
+    permission java.util.PropertyPermission "log4j.*", "read";
+    permission java.util.PropertyPermission "org.apache.commons.logging.*", "read";
+
+    // dbcp,jdbc
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.dbcp.dbcp";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.dbcp.pool";
+    permission java.lang.RuntimePermission "accessClassInPackage.org.apache.tomcat.dbcp.pool.impl";
+    permission java.lang.RuntimePermission "accessClassInPackage.sun.jdbc.odbc";
+
+    // we need to read web-app*.dtd at least from servlet-api.jar if not stuff from all the jars
+    permission java.io.FilePermission "${catalina.home}${file.separator}lib${file.separator}-", "read";
+    permission java.io.FilePermission "${catalina.base}${file.separator}lib${file.separator}-", "read";
+};
+
+// log4j
+grant codeBase "file:${catalina.home}/lib/log4j-1.2.15.jar" {
+    permission java.io.FilePermission "${catalina.base}${file.separator}logs", "read, write";
+    permission java.io.FilePermission "${catalina.base}${file.separator}logs${file.separator}-", "read,write,delete";
+};
+
+// logging extra
+grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
+        // for date-based filenames
+    permission java.util.PropertyPermission "user.timezone", "read,write";
+};
+
+// Grails 1.0.x
+grant codeBase "file:/groovy/shell" {
+    permission  java.lang.reflect.ReflectPermission "suppressAccessChecks"; // if not allowed for all webapps above
+};
+
+// Groovy scripts, e.g. Grails
+grant codeBase "file:/groovy/script" {
+        // Grails 1.0.x
+    permission  java.lang.RuntimePermission "setContextClassLoader";
+    permission  java.lang.reflect.ReflectPermission "suppressAccessChecks"; // if not allowed for all webapps above
+        // Grails 1.0.x database; adjust host/port
+    permission java.net.SocketPermission "127.0.0.1:3306", "connect,resolve";
+    permission java.net.SocketPermission "localhost", "resolve";
+
+        // grails 1.1 + jdk 1.6.0_13
+    permission java.lang.RuntimePermission "defineClassInPackage.java.io";
+    permission java.lang.RuntimePermission "defineClassInPackage.java.lang";
+    permission java.lang.RuntimePermission "defineClassInPackage.java.net";
+    permission java.lang.RuntimePermission "defineClassInPackage.java.util";
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+    permission java.util.PropertyPermission "grails.env", "read";
+};
+
+// per-webapp permissions
+grant codeBase "file:/PATH/TO/webapps/APPNAME/-" {
+        // basic grails stuff incl. groovy magic
+    permission groovy.security.GroovyCodeSourcePermission "/groovy/script";
+    permission groovy.security.GroovyCodeSourcePermission "/groovy/shell"; // 1.0.x
+    permission java.io.FilePermission "./grails-app/-", "read";
+    permission java.io.FilePermission "/groovy/script", "read";
+    permission java.io.FilePermission "/groovy/shell", "read"; // 1.0.x
+    permission java.lang.RuntimePermission "accessClassInPackage.*";
+    permission java.lang.RuntimePermission "createClassLoader";
+    permission java.lang.RuntimePermission "defineClassInPackage.*";
+    permission java.lang.RuntimePermission "getClassLoader";
+    permission java.lang.RuntimePermission "getProtectionDomain";
+    permission java.lang.RuntimePermission "setContextClassLoader";
+    permission java.lang.RuntimePermission "shutdownHooks";
+    permission java.util.PropertyPermission "*", "read,write";
+
+    // logs
+    permission java.io.FilePermission "${catalina.base}/logs", "read";
+    permission java.io.FilePermission "${catalina.base}/logs/APPNAME/-", "read,write,delete";
+
+    // database
+    permission  java.net.SocketPermission "127.0.0.1:3306", "connect,resolve";
+    permission  java.net.SocketPermission "localhost", "resolve";
+
+        // grails 1.0.x broken hibernate ehcache
+    //permission java.io.FilePermission "${catalina.base}${file.separator}temp", "read";
+    //permission java.io.FilePermission "${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.StandardQueryCache.data", "read,write,delete";
+    //permission java.io.FilePermission "${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.StandardQueryCache.index", "read,write,delete";
+    //permission java.io.FilePermission "${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.UpdateTimestampsCache.data", "read,write,delete";
+    //permission java.io.FilePermission "${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.UpdateTimestampsCache.index", "read,write,delete";
+
+        // grails 1.1
+    permission java.io.FilePermission "grails-app/-", "read";
+    permission java.lang.RuntimePermission "setIO";
+
+        // grails 1.1: various jars incl ant use /bin/env
+    permission java.io.FilePermission "/bin/env", "read,execute";
+
+        // jdk 1.6.0_13 + grails
+    permission java.io.FilePermission "./plugins", "read";
+};
+
+grant codeBase "file:/groovy/script" {
+        // grails 1.1 needs this for each webapp
+    permission java.io.FilePermission "/PATH/TO/webapps/APPNAME/-", "read";
+
+        // grails 1.1 + jdk 1.6.0_13 needs this for each webapp, sigh
+    permission java.io.FilePermission "${catalina.base}/work/Catalina/HOSTNAME/APPNAME/-", "read";
+};

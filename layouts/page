@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ sitetitle }} - {{ title }}</title>
+  <meta name="description" content="{{ sitedescription }}">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+  <header>
+    <h1><a rel="home" href="{{ siteurl }}">{{ sitetitle }}</a></h1>
+  </header>
+
+  <h1>{{ title }}</h1>
+
+  {{{ contents }}}
+
+</body>
+</html>

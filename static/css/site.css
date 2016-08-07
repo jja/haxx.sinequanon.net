@@ -1,0 +1,62 @@
+
+header {
+    text-align: center;
+    position: relative;
+    display: block;
+    margin: 1em;
+    padding: 1em;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.header-div {
+}
+
+.header-span {
+    margin: 1em;
+    padding: 1em;
+    background-color: white;
+
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+}
+
+header a,
+header a:visited,
+header a:link,
+{
+    text-decoration: none;
+    color: black;
+}
+
+.header-span a,
+.header-span a:visited,
+.header-span a:link,
+{
+    text-decoration: none;
+    color: black;
+}
+
+code {
+    background-color: #fafafa;
+    padding: 0.25em 0.25em 0.125em;
+}
+
+pre {
+    display: inline-block;
+    }
+
+pre > code {
+    border: 1px solid black;
+    margin: 1em;
+    padding: 2em;
+    background-color: black;
+    color: aqua;
+    display: block;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+

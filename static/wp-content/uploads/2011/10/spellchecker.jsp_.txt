@@ -1,0 +1,189 @@
+<%@page language="java"%>
+<%@page import="java.io.*"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.net.URLDecoder"%>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%
+// spellchecker.jsp
+// for ckeditor plugin aspell
+// http://cksource.com/forums/viewtopic.php?f=11&t=15893
+
+//convert from php to jsp by windu gata 10 October 2007
+// http://cksource.com/forums/viewtopic.php?f=5&t=7200
+
+// heavily modified by John J. Allison <jja@ucar.edu> 21 Oct 2011
+// - working input decoding and entity conversion
+// - use all input parameters instead of just first for complete spell checking
+// - tokenize the aspell input like the perl version does
+// - bit more robust
+
+//The following variables values must reflect your installation needs.
+//String aspell_prog = "C:\\Program Files\\Aspell\\bin\\aspell.exe"; //windows
+String aspell_prog = "/usr/bin/aspell"; //linux
+//String aspell_prog = "/opt/local/bin/aspell"; //apple
+String aspell_opts = "-a --lang=en_US --encoding=utf-8 -H --rem-sgml-check=alt";
+String spellercss = "../spellerStyle.css";
+String word_win_src = "../wordWindow.js";
+%>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="<%=spellercss %>" />
+<script language="javascript" src="<%=word_win_src %>"></script>
+<script language="javascript">
+var suggs = new Array();
+var words = new Array();
+var textinputs = new Array();
+var error;
+
+<%
+//get parameter
+String textinputs[] = request.getParameterValues("textinputs[]");
+
+for (int j=0; j<textinputs.length; j++) {
+ //insert variable textinputs in javascript
+ out.write("textinputs[" + j + "] = decodeURIComponent(\"" + textinputs[j].replace("\'","\\'") + "\");\n");
+
+ // url decode: convert from form posting format to regular (html) text
+ //  note we do not need "s/<[^>]+>/ /g;" from the perl version because "aspell -H" handles html tags
+ textinputs[j] = StringEscapeUtils.unescapeHtml(URLDecoder.decode(textinputs[j],"UTF-8"));
+
+ // if you don't have apache-commons-lang, then you can use this version
+ // but it will find misspellings of partial words before & after the entity
+ //textinputs[j] = URLDecoder.decode(textinputs[j],"UTF-8");
+ }
+
+//get temporary servlet directory
+ServletContext context=request.getSession().getServletContext();
+File tmpdir = (File)context.getAttribute("javax.servlet.context.tempdir");
+File tmpfile = null;
+
+try {
+// write aspell input to a temporary file
+
+tmpfile = File.createTempFile("aspell",null,tmpdir);
+tmpfile.deleteOnExit();
+
+PrintWriter printout = new PrintWriter (new BufferedWriter (new FileWriter (tmpfile)));
+for (int j=0; j<textinputs.length; j++) {
+    String[] lines = textinputs[j].split("\\n");
+    printout.print ("%\n");  // exit terse mode
+    printout.print ("^A\n"); // input_separator
+    printout.print ("!\n");  // enter terse mode
+    for (int k=0; k<lines.length; k++) {
+        // use carat on each line to escape possible aspell commands
+        printout.print ("^");
+        printout.print (lines[k]);
+        printout.print ("\n");
+        }
+    }
+printout.flush ();
+printout.close ();
+} catch (IOException e) {
+  out.write("Cannot create or write to temporary speller file.");
+  System.err.println(e.toString());
+  out.flush();
+  return;
+}
+
+try {
+
+// Windows Nt or XP, change "cmd" to "command" on windows 98
+// String[] cmd = {
+// "cmd",
+// "-c",
+// aspell_prog + " " + aspell_opts + "<" + tmpfile.getPath() + " 2>&1"
+// };
+
+String[] cmd = {
+"/bin/sh",
+"-c",
+aspell_prog + " " + aspell_opts + "<" + tmpfile.getPath() + " 2>&1"
+};
+
+Process p1 = Runtime.getRuntime().exec(cmd);
+int exitValue = p1.waitFor();
+
+if (exitValue == 0) {
+    BufferedReader stdInput = new BufferedReader(new InputStreamReader(p1.getInputStream()));
+    int index = 0;
+    int text_input_idx = -1;
+
+    String s;
+    while ((s = stdInput.readLine()) != null) {
+		// if '&', then not in dictionary but has suggestions
+		// if '#', then not in dictionary and no suggestions
+		// if '*', then it is a delimiter between text inputs
+        if (s.startsWith("*")) {
+            text_input_idx++;
+            out.write("words[" + text_input_idx + "] = [];\n");
+            out.write("suggs[" + text_input_idx + "] = [];\n");
+            index = 0;
+        } else if (s.startsWith("&") || s.startsWith("#")) {
+            if (text_input_idx==-1) {
+                text_input_idx++;
+                }
+            String word[] = s.split(":");
+            String wordleft[] = word[0].split(" ");
+
+            // use StringEscapeUtils.escapeHtml if you have apache-commons-lang
+            // because URLEncoder.encode() encodes to byte sequences, not HTML entities
+            out.write ("words[" + text_input_idx + "][" + index + "] = '" + StringEscapeUtils.escapeHtml(wordleft[1].trim().replace("\'","\\'")) + "';\n");
+            //out.write ("words[" + text_input_idx + "][" + index + "] = '" + URLEncoder.encode(wordleft[1].trim().replace("\'","\\'"),"UTF-8") + "';\n");
+
+            if ( word.length > 0) {
+                String suggs[] = word[1].split(", ");
+                out.write("suggs[" + text_input_idx + "][" + index + "] = [");
+
+                for (int i=0; i< suggs.length; i++) {
+                    out.write( "'" + suggs[i].trim().replace("\'","") + "'");
+                    if (i < suggs.length -1) {
+                        out.write(",");
+                        }
+                    }
+
+                out.write("];\n");
+                }
+
+            index++;
+        } else if (!s.startsWith("@") || !s.startsWith("")) {
+            String aspell_err= s;
+        }
+
+    }
+}
+
+} catch (Exception e) {
+  System.err.println(e);
+  }
+
+try { tmpfile.delete(); } catch (Exception e) { }
+%>
+
+var wordWindowObj = new wordWindow();
+wordWindowObj.originalSpellings = words;
+wordWindowObj.suggestions = suggs;
+wordWindowObj.textInputs = textinputs;
+
+function init_spell() {
+    // check if any error occured during server-side processing
+    if( error ) {
+        alert( error );
+    } else {
+        // call the init_spell() function in the parent frameset
+        if (parent.frames.length) {
+            parent.init_spell( wordWindowObj );
+        } else {
+            alert('This page was loaded outside of a frameset. It might not display properly');
+        }
+    }
+}
+</script>
+</head>
+<body onLoad="init_spell();">
+<script type="text/javascript">
+wordWindowObj.writeBody();
+</script>
+</body>
+</html>
