@@ -21,7 +21,7 @@ Metalsmith(__dirname)
   })
   .source('./src')
   .destination('./build')
-  .clean(true)
+  .clean(false)     // must be false to use gh-pages clone as build/
   .use(collections({
     posts: {
       sortBy: 'date',
