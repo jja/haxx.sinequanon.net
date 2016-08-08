@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Moinmoin calls home</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Moinmoin calls home</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2010-05-14T20:24:30-0600">2010-05-14</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/"></a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>While on a ship at sea, I was using Moinmoin wiki to record some local
+documentation. We had internet (usually, except when the ship pointed a
+certain direction), but it was a bit slow and expensive. So I was annoyed to
+discover that Moinmoin was calling home in several places.</p>
+<!-- more -->
+<p>Mostly it&#39;s in the
+Help documentation, illustrating how to do external linking via <code>{{...}}</code>
+embedding. It was still annoying and tended to lock up my web browser while I
+was trying to get local help when the internet link was down. Here&#39;s the list
+of offending underlays I found in 1.8.7:</p>
+<pre><code>HelpOnCreoleSyntax/revisions/00000001
+HelpOnLinking/revisions/00000001
+HelpOnMoinWikiSyntax/revisions/00000001
+MoinMoin/revisions/00000001
+WikiCourse(2f)17(20)External(20)links/revisions/00000001
+WikiSandBox/revisions/00000001
+</code></pre><p>I <a href="http://moinmo.in/MoinMoinBugs/1.8CallsHome">reported the situation</a>,
+but the developers don&#39;t seem to care about even placing a warning in the
+documentation.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2010/10/ubuntu-on-mac-and-upgrading-to-snow-leopard">Ubuntu on Mac and upgrading to Snow Leopard</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2010/05/phusion-passenger-calls-home">Phusion passenger calls home</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

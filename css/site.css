@@ -1,0 +1,125 @@
+
+header,
+footer,
+section#nav
+{
+    text-align: center;
+    position: relative;
+    display: block;
+    margin: 1em;
+    padding: 1em;
+}
+
+header h1
+{
+    font-size: 3rem;
+    font-weight: bolder;
+}
+
+header a,
+header a:visited,
+header a:link,
+{
+    text-decoration: none;
+    color: black;
+}
+
+.header-span,
+.footer-span
+{
+    margin: 1em;
+    padding: 1em;
+    background-color: white;
+
+    -moz-border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius: 10px 10px 10px 10px;
+}
+
+.header-span a,
+.header-span a:visited,
+.header-span a:link,
+.footer-span a,
+.footer-span a:visited,
+.footer-span a:link,
+{
+    text-decoration: none;
+    color: black;
+}
+
+a.plain
+{
+    text-decoration: none;
+    color: black;
+}
+
+code
+{
+    background-color: #fafafa;
+    padding: 0.25em 0.25em 0.125em;
+}
+
+pre
+{
+    display: inline-block;
+}
+
+pre > code
+{
+    border: 1px solid black;
+    margin: 1em;
+    padding: 2em;
+    background-color: black;
+    color: aqua;
+    display: block;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+ul#postlist
+{
+    max-width: 75%;
+    margin: 0 auto;
+}
+
+li.postitem
+{
+    list-style-type: none;
+    background-color: #eee;
+    border: 1px solid #aaa;
+    margin: 1em;
+    padding: 1em;
+}
+
+ul#tags
+{
+    display: inline;
+    padding: 0;
+}
+
+li.tagitem
+{
+    list-style-type: none;
+    display: inline;
+}
+
+li.tagitem:after
+{
+    content: "-";
+}
+
+li.tagitem:last-child:after
+{
+    content: none;
+}
+
+section#meta
+{
+    padding: 0 0 0 1em;
+}
+
+h1.post-header
+{
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+}

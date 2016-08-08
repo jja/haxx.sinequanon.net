@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - grails</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <h1 class="post-header">Posts about grails</h1>
+
+  <section id="posts">
+      <ul id="postlist">
+  
+          <li class="postitem"><h2><a href="/2008/10/grails-errorgsp-security">Grails error.gsp security</a></h2>
+            2008-10-01          <p>The default generated error.gsp view in Grails displays the stacktrace for any
+  exceptions that occur. That&#39;s nice for debugging in a development environment
+  but it is a security issue for production as it is
+  <a href="http://www.owasp.org/index.php/Error_Handling">information leakage</a>.
+  We can easily turn this off when not in development, and do something useful
+  like redirect to the application homepage.</p>
+            <a href="/2008/10/grails-errorgsp-security">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2008/09/grails-stacktracelog">Grails stacktrace.log</a></h2>
+            2008-09-30          <p>Grails 1.0.x started creating a <code>stacktrace.log</code> file in the directory where
+  the servlet container starts. In a development environment, using
+  <code>grails run-app</code>, that&#39;s simple enough--- it appears in the top level of your
+  application. In a production environment, this becomes a problem. Your
+  production container (e.g. Tomcat) may start someplace where it can&#39;t create
+  files, like <code>/</code>. Thus you get exceptions sent to your container&#39;s log files
+  like:</p>
+            <a href="/2008/09/grails-stacktracelog">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2008/09/grails-logging">Grails logging</a></h2>
+            2008-09-24          <p>To turn on display of debug log messages in Grails 1.0.2, add this to the
+  bottom of <code>grails-app/conf/Config.groovy</code>:</p>
+            <a href="/2008/09/grails-logging">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2008/09/grails-testing">Grails testing</a></h2>
+            2008-09-23          <p>The <a href="http://grails.org/">Grails</a> <a href="http://grails.org/doc/1.0.x/">docs</a>
+  talk about testing and have some example test methods but fail to describe some
+  simple but necessary mechanics to get it going. The test methods should be in
+  a class that extends <code>GroovyTestCase</code> (that word doesn&#39;t appear at all when
+  searching the Grails website). The class name must end with <code>Tests</code> since it
+  must be in a file with a name ending in <code>Tests.groovy</code> under the <code>test</code>
+  directory of your grails project.</p>
+            <a href="/2008/09/grails-testing">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2008/09/grails-gitignore">Grails .gitignore</a></h2>
+            2008-09-18          <p>I&#39;ve started playing with <a href="http://git.or.cz/">git</a> for source code revision
+  management. Here is my first cut at a .gitignore for a Grails 1.0.3 project.</p>
+            <a href="/2008/09/grails-gitignore">(read more)</a>
+          </li>
+  
+      </ul>
+  </section>
+
+  <section id="nav">
+        <span class="footer-span">
+          <a class="plain" href="/tag/grails/index.html">Newer</a>
+        </span>
+  
+  </section>
+  
+  <footer>
+      <span class="footer-span">
+        <a class="plain" href="/about/">About</a>
+      </span>
+  </footer>
+
+</body>
+</html>

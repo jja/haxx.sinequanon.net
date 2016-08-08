@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails 2.3.11 with Java8</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails 2.3.11 with Java8</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2015-12-22T15:08:00-0700">2015-12-22</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/java">java</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Grails 2.3.11 (or any 2.3.x) does not work with Java8 (<code>jdk1.8.0_40</code> or
+later). Following are some notes on how to get things working.</p>
+<!-- more -->
+<p>Edit: this
+information was originally documented in late 2015. While these issues may
+have since been resolved in later versions of Grails, because of the pain in
+upgrading to 2.4/2.5 or starting from scratch in 3.x, you may be stalled in
+2.3.11.</p>
+<p>Grails 2.3.11 includes Spring Loaded 1.2.0 which is incompatible with Java8.
+No fix is available until Grails 2.4.5 or even 2.5.1.</p>
+<ul>
+<li><a href="https://github.com/spring-projects/spring-loaded/issues/98">spring-loaded #98</a></li>
+<li><a href="https://jira.grails.org/browse/GRAILS-12042">GRAILS-12042</a></li>
+<li><a href="https://github.com/grails/grails-core/issues/619">grails-core #619</a></li>
+<li><a href="https://github.com/grails/grails-core/issues/9136">grails-core #9136</a></li>
+</ul>
+<p>Download Spring Loaded 1.2.4:</p>
+<ul>
+<li><a href="http://repo.spring.io/release/org/springframework/springloaded/1.2.4.RELEASE/">springloaded/1.2.4.RELEASE/</a></li>
+</ul>
+<p>Remove the old jars and .pom files and place the new files in their
+corresponding places under (as always, be careful of cut-n-paste linebreaks):</p>
+<pre><code>$GRAILS_HOME/lib/org.springframework/springloaded/
+</code></pre><p>Rename and edit <code>ivy-1.2.0.RELEASE.xml</code> to reflect the new version number.
+Unfortunately, that&#39;s not enough because something still wants the 1.2.0 jar.
+So symlink that name:</p>
+<pre><code>cd $GRAILS_HOME/lib/org.springframework/springloaded/jars
+ln -s springloaded-1.2.4.RELEASE.jar springloaded-1.2.0.RELEASE.jar
+</code></pre><p>You must also update a major security hole in Commons Collections, which is
+not fixed in Grails 2.3.x. Download the jar for version 3.2.2 (or higher) from
+one of:</p>
+<ul>
+<li><a href="http://commons.apache.org/proper/commons-collections/download_collections.cgi">commons-collections</a></li>
+<li><a href="http://repo1.maven.org/maven2/commons-collections/commons-collections/">maven</a></li>
+</ul>
+<p>Install under:</p>
+<pre><code>$GRAILS_HOME/lib/commons-collections/commons-collections/
+</code></pre><p>Rename and edit <code>ivy-3.2.1.xml</code> to reflect the new version number.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2016/07/updated-eagle-fire-garfield-randomizer">Updated Eagle_Fire Garfield Randomizer</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2015/11/tomcat-jsvc-on-centos-7">Tomcat Jsvc on CentOS 7</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

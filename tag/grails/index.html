@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - grails</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <h1 class="post-header">Posts about grails</h1>
+
+  <section id="posts">
+      <ul id="postlist">
+  
+          <li class="postitem"><h2><a href="/2015/12/grails-2-3-11-with-java8">Grails 2.3.11 with Java8</a></h2>
+            2015-12-22          <p>Grails 2.3.11 (or any 2.3.x) does not work with Java8 (<code>jdk1.8.0_40</code> or
+  later). Following are some notes on how to get things working.</p>
+            <a href="/2015/12/grails-2-3-11-with-java8">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2014/10/better-structured-date-editor-for-grails">Better structured date editor for Grails</a></h2>
+            2014-10-13          <p>It&#39;s really surprising and annoying that the default structured editor for
+  dates and times in Grails is so limited. It only allows one to edit (or enter)
+  time information down to the minute. Seconds and smaller are ignored, even
+  though the editor specifically returns an epoch time in milliseconds with the
+  <code>getTime()</code> method! The default editor also only works for <code>java.util.Date</code>
+  and <code>java.sql.Date</code> -- not the also common <code>java.sql.Timestamp</code>.</p>
+            <a href="/2014/10/better-structured-date-editor-for-grails">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2014/08/grails-plugin-dependencies-issues">grails plugin dependencies issues</a></h2>
+            2014-08-29          <p>We&#39;ve been banging our heads over some quirks and inconsistencies that we
+  eventually traced to plugin dependency naming in Grails 2.3.x. My main Grails
+  app gets its domain classes from a local plugin. That plugin needs the
+  Hibernate and JodaTime plugins. Spelling the plugin names can be confusing and
+  caused problems with run-app and run-script.</p>
+            <a href="/2014/08/grails-plugin-dependencies-issues">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/10/grails-plugin-ckeditor-with-aspell">Grails plugin CKEditor with aspell</a></h2>
+            2011-10-24          <p>Here&#39;s an info dump of some things I did to get Linux aspell-based spell
+  checking working with the Grails CKEditor plugin.</p>
+            <a href="/2011/10/grails-plugin-ckeditor-with-aspell">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/10/grails-and-cgi">Grails and CGI</a></h2>
+            2011-10-24          <p>Here&#39;s how to get CGI working in a Grails app.</p>
+            <a href="/2011/10/grails-and-cgi">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/06/grails-standalone-classes-need-package">Grails standalone classes need package</a></h2>
+            2011-06-28          <p>I was reminded again today that standalone classes in Grails must belong to a
+  package. That is, a class in <code>src/groovy</code> or <code>src/java</code> needs to be in a
+  package. For example:</p>
+            <a href="/2011/06/grails-standalone-classes-need-package">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/04/gorm-nullables-and-unsaved-transient-instance">GORM nullables and unsaved transient instance</a></h2>
+            2011-04-05          <p>I have nullable one-to-many relations in Grails/GORM and started getting
+  &quot;object references an unsaved transient instance&quot; exceptions from Hibernate.
+  In the Grails forms, selecting a blank/no-selection value for the field sent
+  <code>params.myOtherObject.id==&#39;&#39;</code>. GORM then tries to create a new empty object
+  and during the <code>save(flush:true)</code>, it complains with the exception:</p>
+            <a href="/2011/04/gorm-nullables-and-unsaved-transient-instance">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/03/groovy-grails-markup-builder">Groovy (Grails) markup builder for select/option menu</a></h2>
+            2011-03-31          <p>I was trying to use the Groovy XML MarkupBuilder to have Grails output an HTML
+  fragment for an AJAX call and just couldn&#39;t get it to work. I wanted to
+  generate an HTML select/option menu from a list of lists:</p>
+            <a href="/2011/03/groovy-grails-markup-builder">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2009/06/security-policy">Security policy permissions for Grails in Tomcat</a></h2>
+            2009-06-04          <p>Here are the permissions I&#39;ve used for Grails apps deployed to Tomcat running
+  the Java security manager.</p>
+            <a href="/2009/06/security-policy">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2009/03/grails-11-logging">Grails 1.1 logging</a></h2>
+            2009-03-26          <p>Grails 1.1 has changed logging setup completely, introducing a
+  <a href="http://grails.org/doc/1.1/guide/3.%20Configuration.html#3.1.2%20Logging">new DSL closure</a>.
+  For the most part it&#39;s cool, but the syntax looks the same sometimes for both
+  log level and appender assignments. I&#39;ve updated my previous posts on
+  <a href="/2008/09/grails-logging/">debug logging</a>
+  and
+  <a href="/2008/09/grails-stacktracelog/">stacktrace.log</a>.
+  For the record, included below is the complete log4j closure I&#39;m now using for
+  a new Grails 1.1 project (or
+  <a href="/wp-content/uploads/2009/03/log4jdsl.txt">download</a>
+  it). Append this to the default <code>Config.groovy</code> file.</p>
+            <a href="/2009/03/grails-11-logging">(read more)</a>
+          </li>
+  
+      </ul>
+  </section>
+
+  <section id="nav">
+  
+        <span class="footer-span">
+          <a class="plain" href="/tag/grails/2/index.html">Older</a>
+        </span>
+  </section>
+  
+  <footer>
+      <span class="footer-span">
+        <a class="plain" href="/about/">About</a>
+      </span>
+  </footer>
+
+</body>
+</html>

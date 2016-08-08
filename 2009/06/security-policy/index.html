@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Security policy permissions for Grails in Tomcat</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Security policy permissions for Grails in Tomcat</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2009-06-04T17:27:59-0600">2009-06-04</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/security">security</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/tomcat">tomcat</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Here are the permissions I&#39;ve used for Grails apps deployed to Tomcat running
+the Java security manager.</p>
+<!-- more -->
+<p>The Grails 1.0.x permissions are for a simple CRUD
+app. So far the Grails 1.1 permissions are just for a Hello World app. They&#39;re
+not cut-and-paste: some thought is required to apply to individual server
+setups and some duplication is present. The grants go in the
+<code>conf/catalina.policy</code> file and restarting Tomcat is required. Unfortunately,
+it seems impossible to completely isolate these per-webapp since the Groovy
+and Grails code presents itself in funny ways.</p>
+<p>I&#39;m using Tomcat 6.0.18 and used both JDK 1.6.0_12 and 1.6.0_13 running on
+some sort of Linux.</p>
+<h2 id="common">Common</h2>
+<p>These permissions are so common, not just for Groovy/Grails, that I gave up
+and allow them for all webapps.</p>
+<pre><code>grant {
+    // jsp
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.java.lang&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.org.apache.jasper.runtime&quot;;
+    // jsp,struts,groovy,etc
+    permission java.lang.RuntimePermission &quot;accessDeclaredMembers&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.org.apache.catalina&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.org.apache.coyote&quot;;
+    // commons-beanutils, commons-digester, struts, and *every* jira and groovy/grails class
+        // sigh, cf. https://www.securecoding.cert.org/confluence/display/java/SEC32-J.+Do+not+grant+ReflectPermission+with+action+suppressAccessChecks
+    permission java.lang.reflect.ReflectPermission &quot;suppressAccessChecks&quot;;
+    // config
+    permission java.util.PropertyPermission &quot;catalina.base&quot;, &quot;read&quot;;
+    // logging
+    permission java.util.PropertyPermission &quot;log4j.*&quot;, &quot;read&quot;;
+    permission java.util.PropertyPermission &quot;org.apache.commons.logging.*&quot;, &quot;read&quot;;
+    // dbcp,jdbc
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.org.apache.tomcat.dbcp.dbcp&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.org.apache.tomcat.dbcp.pool&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.org.apache.tomcat.dbcp.pool.impl&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.sun.jdbc.odbc&quot;;
+    // we need to read web-app*.dtd at least from servlet-api.jar if not stuff from all the jars
+    permission java.io.FilePermission &quot;${catalina.home}${file.separator}lib${file.separator}-&quot;, &quot;read&quot;;
+    permission java.io.FilePermission &quot;${catalina.base}${file.separator}lib${file.separator}-&quot;, &quot;read&quot;;
+};
+</code></pre><h2 id="grails-1-0-x">Grails 1.0.x</h2>
+<p>This is needed if <code>suppressAccessChecks</code> is not allowed for everyone as above.</p>
+<pre><code>grant codeBase &quot;file:/groovy/shell&quot; {
+   permission  java.lang.reflect.ReflectPermission &quot;suppressAccessChecks&quot;;
+};
+</code></pre><p>General grant for Groovy:</p>
+<pre><code>grant codeBase &quot;file:/groovy/script&quot; {
+   permission  java.lang.RuntimePermission &quot;setContextClassLoader&quot;;
+   permission  java.lang.reflect.ReflectPermission &quot;suppressAccessChecks&quot;; // if not allowed for all webapps above
+    // database; adjust host/port
+    permission java.net.SocketPermission &quot;127.0.0.1:3306&quot;, &quot;connect,resolve&quot;;
+    permission java.net.SocketPermission &quot;localhost&quot;, &quot;resolve&quot;;
+};
+</code></pre><p>Per-webapp permissions:</p>
+<pre><code>grant codeBase &quot;file:/PATH/TO/webapps/APPNAME/-&quot; {
+        // basic grails stuff incl. groovy magic
+    permission groovy.security.GroovyCodeSourcePermission &quot;/groovy/script&quot;;
+    permission groovy.security.GroovyCodeSourcePermission &quot;/groovy/shell&quot;;
+    permission java.io.FilePermission &quot;./grails-app/-&quot;, &quot;read&quot;;
+    permission java.io.FilePermission &quot;/groovy/script&quot;, &quot;read&quot;;
+    permission java.io.FilePermission &quot;/groovy/shell&quot;, &quot;read&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.*&quot;;
+    permission java.lang.RuntimePermission &quot;createClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.*&quot;;
+    permission java.lang.RuntimePermission &quot;getClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;getProtectionDomain&quot;;
+    permission java.lang.RuntimePermission &quot;setContextClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;shutdownHooks&quot;;
+    permission java.util.PropertyPermission &quot;*&quot;, &quot;read,write&quot;;
+};
+</code></pre><p>These grants may be needed for Hibernate caching, and still might not be
+enough. If so, add them to the per-webapp section. Better is to re-configure
+the caching to use some other files, else they will be shared by multiple
+Grails webapps (which is bad). (Unfortunately that is difficult, especially to
+change the directory. Maybe another post will address it.)</p>
+<pre><code>        // grails 1.0.x broken hibernate ehcache
+    //permission java.io.FilePermission &quot;${catalina.base}${file.separator}temp&quot;, &quot;read&quot;;
+    //permission java.io.FilePermission &quot;${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.StandardQueryCache.data&quot;, &quot;read,write,delete&quot;;
+    //permission java.io.FilePermission &quot;${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.StandardQueryCache.index&quot;, &quot;read,write,delete&quot;;
+    //permission java.io.FilePermission &quot;${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.UpdateTimestampsCache.data&quot;, &quot;read,write,delete&quot;;
+    //permission java.io.FilePermission &quot;${catalina.base}${file.separator}temp${file.separator}org.hibernate.cache.UpdateTimestampsCache.index&quot;, &quot;read,write,delete&quot;;
+</code></pre><h2 id="grails-1-1">Grails 1.1</h2>
+<p>General grant needed for Groovy scripts:</p>
+<pre><code>// groovy scripts, e.g. grails
+grant codeBase &quot;file:/groovy/script&quot; {
+        // grails 1.1 + jdk 1.6.0_13
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.java.io&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.java.lang&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.java.net&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.java.util&quot;;
+    permission java.lang.reflect.ReflectPermission &quot;suppressAccessChecks&quot;;
+    permission java.util.PropertyPermission &quot;grails.env&quot;, &quot;read&quot;;
+};
+</code></pre><p>Per-webapp grants:</p>
+<pre><code>grant codeBase &quot;file:/PATH/TO/webapps/APPNAME/-&quot; {
+        // basic grails stuff incl. groovy magic
+    permission groovy.security.GroovyCodeSourcePermission &quot;/groovy/script&quot;;
+    permission java.io.FilePermission &quot;./grails-app/-&quot;, &quot;read&quot;;
+    permission java.io.FilePermission &quot;/groovy/script&quot;, &quot;read&quot;;
+    permission java.lang.RuntimePermission &quot;accessClassInPackage.*&quot;;
+    permission java.lang.RuntimePermission &quot;createClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;defineClassInPackage.*&quot;;
+    permission java.lang.RuntimePermission &quot;getClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;getProtectionDomain&quot;;
+    permission java.lang.RuntimePermission &quot;setContextClassLoader&quot;;
+    permission java.lang.RuntimePermission &quot;shutdownHooks&quot;;
+    permission java.util.PropertyPermission &quot;*&quot;, &quot;read,write&quot;;
+        // grails 1.1
+    permission java.io.FilePermission &quot;grails-app/-&quot;, &quot;read&quot;;
+    permission java.lang.RuntimePermission &quot;setIO&quot;;
+        // grails 1.1: various jars incl ant use /bin/env
+    permission java.io.FilePermission &quot;/bin/env&quot;, &quot;read,execute&quot;;
+        // jdk 1.6.0_13 + grails
+    permission java.io.FilePermission &quot;./plugins&quot;, &quot;read&quot;;
+};
+</code></pre><p>Each webapp also needs an additional Groovy script grant:</p>
+<pre><code>grant codeBase &quot;file:/groovy/script&quot; {
+        // grails 1.1 needs this for each webapp
+    permission java.io.FilePermission &quot;/PATH/TO/webapps/APPNAME/-&quot;, &quot;read&quot;;
+        // grails 1.1 + jdk 1.6.0_13 needs this for each webapp, sigh
+    permission java.io.FilePermission &quot;${catalina.base}/work/Catalina/HOSTNAME/APPNAME/-&quot;, &quot;read&quot;;
+};
+</code></pre><h2 id="logging">Logging</h2>
+<p>For any version of Grails, logging needs additional permissions. Some are so
+common I add them separately:</p>
+<pre><code>// log4j
+grant codeBase &quot;file:${catalina.home}/lib/log4j-1.2.15.jar&quot; {
+    permission java.io.FilePermission &quot;${catalina.base}${file.separator}logs&quot;, &quot;read, write&quot;;
+    permission java.io.FilePermission &quot;${catalina.base}${file.separator}logs${file.separator}-&quot;, &quot;read,write,delete&quot;;
+};
+
+// logging extra
+grant codeBase &quot;file:${catalina.home}/bin/tomcat-juli.jar&quot; {
+        // for date-based filenames
+    permission java.util.PropertyPermission &quot;user.timezone&quot;, &quot;read,write&quot;;
+};
+</code></pre><p>Each per-webapp section needs logging permissions which will vary based on
+your logging setup:</p>
+<pre><code>    // logs
+    permission java.io.FilePermission &quot;${catalina.base}/logs&quot;, &quot;read&quot;;
+    permission java.io.FilePermission &quot;${catalina.base}/logs/APPNAME/-&quot;, &quot;read,write,delete&quot;;
+</code></pre><h2 id="database">Database</h2>
+<p>The per-webapp grant also generally needs some database permissions. These are
+for mysql on localhost:</p>
+<pre><code>   permission  java.net.SocketPermission &quot;127.0.0.1:3306&quot;, &quot;connect,resolve&quot;;
+   permission  java.net.SocketPermission &quot;localhost&quot;, &quot;resolve&quot;;
+</code></pre><h2 id="references">References</h2>
+<p>Mark Petrovic has written some nice articles and code about security
+profiling/monitoring, which I originally found via the
+<a href="http://www.nabble.com/grails---user-f11861.html">Grails-user</a> mailing list:</p>
+<ul>
+<li><a href="http://www.onjava.com/pub/a/onjava/2007/01/03/discovering-java-security-requirements.html">OnJava</a></li>
+<li><a href="http://www.petrovic.org/content/SecMgrTutorial/sm.html">SecMgrTutorial</a></li>
+<li><a href="http://docs.codehaus.org/display/GRAILS/Discovering+a+web+application&#39;s+security+requirements">Grails wiki</a></li>
+<li><a href="http://www.petrovic.org/blog/2006/11/02/profiling-a-java-applications-security-needs/">Blog post</a></li>
+</ul>
+<h2 id="download">Download</h2>
+<p>Download the grants/permissions all together in one file:
+<a href="/wp-content/uploads/2009/06/grails-policy.txt">grails-policy.txt</a></p>
+<h2 id="comments">Comments</h2>
+<p><a href="http://mysqlsecurity.com/200906/mysql/security-policy-permissions-for-grails-in-tomcat-%c2%ab-haxx-qua-non/">Security policy permissions for Grails in Tomcat « haxx qua non | MySQL Security</a> commented at 2009-06-04 19:02:50</p>
+<p>[...] See the original post: Security policy permissions for Grails in Tomcat « haxx qua non [...]</p>
+<hr>
+<p>Tom commented at 2012-01-11 11:47:53</p>
+<p>Hi, </p>
+<p>I am new to Grails. I am trying to run the following java RMI-client code from within my Grails web app: </p>
+<p>(grails/appname/src/java/ClientProgram.java) </p>
+<pre><code>... 
+
+import java.rmi.registry.LocateRegistry; 
+import java.rmi.registry.Registry; 
+import java.math.BigDecimal; 
+import compute.Compute; 
+import java.util.Properties; 
+import java.io.FileInputStream; 
+
+public class ClientProgram { 
+... 
+
+        public static void run( String regHost, String precision ) { 
+                setSystemProps(); 
+                if(System.getSecurityManager() ==  null) { 
+                        System.setSecurityManager(new SecurityManager()); 
+                } 
+                try { 
+                        String name = &quot;Compute&quot;; 
+                        Registry registry = LocateRegistry.getRegistry(regHost); 
+                        Compute comp = (Compute) registry.lookup(name); 
+                        Pi task = new Pi(Integer.parseInt(precision)); 
+                        BigDecimal pi = comp.executeTask(task); 
+                        System.out.println(pi); 
+                } catch(Exception e) { 
+                        System.err.println(&quot;ComputePi exception.&quot;); 
+                        e.printStackTrace(); 
+                } 
+        } 
+
+... 
+} 
+</code></pre><p>See <a href="http://pastebin.com/GpQVhvee">http://pastebin.com/GpQVhvee</a> for the complete class source. </p>
+<p>I get the following error when the code is executed: </p>
+<pre><code>2012-01-09 19:20:48,794 [http-9876-1] ERROR [/smartmeters].[gsp]  - Servlet.service() for servlet gsp threw exception 
+java.security.AccessControlException: access denied (java.util.PropertyPermission grails.full.stacktrace read) 
+        at java.security.AccessControlContext.checkPermission(AccessControlContext.java:374) 
+        at java.security.AccessController.checkPermission(AccessController.java:546) 
+        at java.lang.SecurityManager.checkPermission(SecurityManager.java:532) 
+        at java.lang.SecurityManager.checkPropertyAccess(SecurityManager.java:1285) 
+        at java.lang.System.getProperty(System.java:650) 
+... 
+</code></pre><p>Please see <a href="http://pastebin.com/jTzaiWfj">http://pastebin.com/jTzaiWfj</a> for the full error message. </p>
+<p>I believe this error may appear because I have not got the correct policy settings for this code. I need the following rule in the security policy: </p>
+<pre><code>grant codeBase &quot;file:/opt/grails/grails-1.3.7/appname/src/&quot; { 
+        permission java.security.AllPermission; 
+}; 
+</code></pre><p>But I cannot find where the policy file is created or stored. If this was just a normal java application I would pass the security policy file in as a system property as follows: </p>
+<pre><code>java -Djava.security.policy=policy.file main-class 
+</code></pre><p>But I don&#39;t know how to achieve the same effect in Grails. Please can someone tell me how to set the java security policy for my Grails app? </p>
+<p>Thanks, 
+Tom</p>
+<hr>
+<p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2012-01-17 12:42:24</p>
+<p>It depends on your servlet container where the security policy is stored. For a production Tomcat 6 instance, it&#39;s usually in the conf/ directory and named &quot;catalina.policy&quot;, and your Tomcat startup uses the same -D arguments to java, e.g. <code>-Djava.security.manager -Djava.security.policy=${CATALINA_BASE}/conf/catalina.policy</code></p>
+<hr>
+<p>Patrick commented at 2012-05-31 13:47:56</p>
+<p>I&#39;m working on a project that&#39;s forcing us to grant java.util.PropertyPermission and java.lang.RuntimePermission &quot;accessDeclaredMembers&quot; across all webapps. The trouble is we may not have that option, and our webapp specific grants aren&#39;t working.</p>
+<p>When you were working on this blog did you experience similar issues?</p>
+<hr>
+<p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2012-06-05 12:06:52</p>
+<p>I have access to Tomcat configuration, so I was able to grant everything needed, including <code>accessDeclaredMembers</code> globally, and others semi-globally for codeBase <code>file:/groovy/script</code>. Sorry, that probably doesn&#39;t help you.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2010/05/phusion-passenger-calls-home">Phusion passenger calls home</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2009/03/tomcat-ajp13-connector-issues">Tomcat AJP/1.3 Connector issues</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

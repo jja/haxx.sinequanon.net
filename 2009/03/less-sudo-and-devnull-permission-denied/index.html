@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - less, sudo, and /dev/null: Permission denied</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>less, sudo, and /dev/null: Permission denied</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2009-03-25T15:33:09-0600">2009-03-25</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag//dev/null">/dev/null</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/less">less</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/sudo">sudo</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Sigh. The ubiquitous utility <strong>less</strong> does a really bad and hard to understand
+thing. For some time now, it behaves not just as a reader but also a writer:
+it writes a history file (specified by the environment variable <code>LESSHISTFILE</code>
+which is <code>$HOME/.lesshst</code> by default). If <strong>you</strong> want less to be <strong>writing</strong>
+things, fine, but don&#39;t force it on <strong>me</strong>! This has caused some annoying
+problems that have been really hard to finally trace back to less.</p>
+<!-- more -->
+<p>To turn off this behavior, set the variable <code>LESSHISTFILE</code> (either in the
+environment or in your lesskey file) to <code>&#39;-&#39;</code>. The docs say you can use
+<code>&#39;/dev/null&#39;</code> too, but don&#39;t-- I&#39;ll explain below. Besides writing a file,
+less goes a step further and does a chmod on that file to <code>0600</code>, which is
+actually a reasonable permission set to keep others from seeing your history.
+The problem is that <code>sudo</code> picks up the <code>HOME</code> variable but not
+<code>LESSHISTFILE</code>, so <code>sudo less</code> was writing a <code>.lesshst</code> file in my home
+directory.</p>
+<p>Some time ago, I gakked and disgustedly symlinked .lesshst to /dev/null. But
+then when less does the chmod during sudo, it changes the permissions of
+/dev/null (which is why LESSHISTFILE set to /dev/null is bad-- less is
+supposed to ignore it in that case but still somehow chmods /dev/null). So I
+couldn&#39;t use /dev/null anymore (and quite a few scripts do so, it&#39;s a standard
+practice), getting messages like <code>/dev/null: Permission denied</code>.</p>
+<p>The workaround to this <del>bug</del> &#39;feature&#39; of less is to set the
+<code>LESSHISTFILE</code> variable in the <code>LESSKEY</code> file (<code>$HOME/.less</code>):</p>
+<pre><code>% lesskey -
+#env
+LESSHISTFILE = -
+^D
+</code></pre><p>then sudo will pick up <code>$HOME</code>, less will then read <code>LESSHISTFILE</code> from
+<code>$HOME/.less</code> and not create the stoopid <code>.lesshst</code>, so I don&#39;t need the symlink
+to <code>/dev/null</code> anymore.</p>
+<p>There are other reports of changing permissions on <code>/dev/null</code> that are
+generally unexplained. Try to stay away from symlinks to <code>/dev/null</code> in your
+home directory, especially any that might get chmod applied by a program you
+run via sudo. (I still have <code>.evolution</code> and <code>.recently-used</code> symlinked to
+<code>/dev/null</code>. I don&#39;t think I sudo anything using those...)</p>
+<h2 id="comments">Comments</h2>
+<p>Jesper commented at 2011-06-01 07:22:06</p>
+<p>Interesting, thanks for the analysis. I just stumbled on this problem myself. </p>
+<p>Scenario:</p>
+<pre><code>$ export LESSHISTFILE=/dev/null
+$ sudo -s
+# history|less (or any other invocation of less I guess)
+*poof* /dev/null is 700, thus unusable for non-root users.
+</code></pre><p>I guess the sudo -s carried over the LESSHISTFILE variable to the privileged shell, and less got a bit too eager about permissions on what it believed to be its history file.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2009/03/grails-11-logging">Grails 1.1 logging</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2008/10/rails-logged-in-user-idiom">Rails logged_in_user idiom</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

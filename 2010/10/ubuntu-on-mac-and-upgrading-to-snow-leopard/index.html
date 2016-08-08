@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Ubuntu on Mac and upgrading to Snow Leopard</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Ubuntu on Mac and upgrading to Snow Leopard</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2010-10-02T15:25:26-0600">2010-10-02</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/linux">linux</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/mac">mac</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/ubuntu">ubuntu</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>I&#39;m now running Ubuntu 9.x on a MacBook Pro that was leftover after
+colleagues&#39; hardware upgrades. Posts from
+<a href="http://trainque.com/blog/2006/10/21/how-to-dual-boot-ubuntu-osx/">trainque</a>
+and
+<a href="http://blogs.sun.com/richb/entry/powerbook_dual_boot:_macosx_tiger">richb</a>
+helped, but I ran into a few more quirks.</p>
+<!-- more -->
+<p>Rich linked to <a href="http://ubuntuforums.org/showthread.php?t=89960">ubuntuforums</a>
+about resizing the disk partitions to make room for Ubuntu. First, one must
+disable journaling on the Mac partition. This is so Ubuntu/Linux can play with
+the partition. The posts then describe using
+<a href="http://www.gnu.org/software/parted/index.shtml">parted</a>
+(GNU partition editor) to resize the partitions. The Ubuntu 9.0.4 install CD
+also has gparted---the graphical version---available. It&#39;s under
+<code>System &gt; Administrator &gt; Partition Editor</code>.</p>
+<p>Then the rest of the install went smoothly and easily with the Ubuntu wizards.
+Afterwards, one can hold the Option key to pick whether to boot to MacOSX or
+Ubuntu. Or better yet, install <a href="http://refit.sourceforge.net/">refit</a> for a
+nicer multi-boot.</p>
+<p>So now a day later, I find out I can upgrade from MacOS 10.5 to 10.6 (Snow
+Leopard). But the install DVD doesn&#39;t like my Mac partition, with little
+explanation.
+<a href="http://forums.macrumors.com/archive/index.php/t-737061.html">Many</a>
+<a href="http://forums.mactalk.com.au/46/72170-mega-merge-snow-leopard-installation-experiences-problems.html">web</a>
+<a href="http://www.insanelymac.com/forum/index.php?showtopic=181955">searches</a>
+<a href="http://support.apple.com/kb/TS1600">later</a>
+<a href="http://discussions.apple.com/thread.jspa?threadID=2130966&amp;start=32&amp;tstart=0">point</a>
+to a couple of possible issues with the partition map.</p>
+<p>The 2 solutions for me were to reboot from the Ubuntu CD, resize the Mac
+partition to have 200MB empty space after it, and then run gptsync from the
+refit shell. Now Snow Leopard is happily installing onto my Mac partition. You
+can probably prevent this by setting up your partitions better in the initial
+g/parted resizing, but then the Ubuntu install will have to ask you where to
+put things instead of using the &quot;largest continuous free space&quot;. If you do it
+this way, make your Linux swap partition to be 2GB and and leave 200MB emtpy
+immediately after your Mac HFS+ partition.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2010/12/subversion-repository-to-git-subdirectory">Subversion repository to git subdirectory</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2010/05/moinmoin-calls-home">Moinmoin calls home</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

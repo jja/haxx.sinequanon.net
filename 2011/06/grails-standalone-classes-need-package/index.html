@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails standalone classes need package</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails standalone classes need package</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2011-06-28T13:58:35-0600">2011-06-28</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>I was reminded again today that standalone classes in Grails must belong to a
+package. That is, a class in <code>src/groovy</code> or <code>src/java</code> needs to be in a
+package. For example:</p>
+<!-- more -->
+<pre><code>file: src/groovy/mypackage/MyClass.groovy
+package mypackage
+
+class MyClass { ... }
+</code></pre><p>If the class is without a package (appearing as <code>src/groovy/MyClass.groovy</code>),
+it will compile correctly but no Grails classes (like your controller or
+service) will be able to find it, generating an
+<code>org.codehaus.groovy.control.MultipleCompilationErrorsException</code> with the
+message <code>unable to resolve class MyClass</code>.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2011/10/grails-and-cgi">Grails and CGI</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2011/04/gorm-nullables-and-unsaved-transient-instance">GORM nullables and unsaved transient instance</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

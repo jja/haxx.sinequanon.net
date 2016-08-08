@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails logging</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails logging</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2008-09-24T13:39:07-0600">2008-09-24</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/logging">logging</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>To turn on display of debug log messages in Grails 1.0.2, add this to the
+bottom of <code>grails-app/conf/Config.groovy</code>:</p>
+<!-- more -->
+<pre><code>environments {
+  development {
+    log4j {
+      logger {
+         grails.&quot;app&quot;=&quot;debug,stdout&quot;
+         //grails=&quot;debug,stdout&quot;    // maybe need this too
+      }
+    }
+  }
+}
+</code></pre><p>Info on other versions continues below.</p>
+<!-- more -->
+<p>With Grails 1.0.3 and 1.0.4, the above will produce an error message like <code>No
+such property: context for class: java.lang.String</code></p>
+<p>For 1.0.3 and 1.0.4, use this:</p>
+<pre><code>environments {
+  development {
+    log4j {
+      logger {
+        grails {
+          app=&quot;debug&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre><p>In your code, simply use <code>log.debug(&quot;my message&quot;)</code></p>
+<p>Thanks to the grails-user mailing list for
+<a href="http://www.nabble.com/1.0.3---No-such-property:-context-for-class:-java.lang.String-td18515263.html">a clue</a>
+towards this.</p>
+<p>Update: I&#39;ve been working through all this again for 1.0.4 and 1.1. I added a
+commented line for 1.0.2 that I&#39;m now needing to include, although it
+unfortunately doubles the output.</p>
+<p>Unfortunately, the 1.0.3/4 method does not work in 1.1. After upgrading, you
+need to change the extra logging snippet even if you leave the standard
+logging section in the old format. For 1.1:</p>
+<pre><code>environments {
+  development {
+    log4j = {
+      debug &#39;grails.app&#39;
+    }
+  }
+}
+</code></pre><p>Also note that one could add the grails.app config lines in the middle of the
+regular log4j configuration section, but the examples given illustrate how to
+have different log levels in different environments, e.g. debug messages in
+development mode and only error messages in production.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2008/09/grails-stacktracelog">Grails stacktrace.log</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2008/09/grails-testing">Grails testing</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

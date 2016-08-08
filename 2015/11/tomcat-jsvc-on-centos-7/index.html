@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Tomcat Jsvc on CentOS 7</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Tomcat Jsvc on CentOS 7</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2015-11-09T16:35:37-0700">2015-11-09</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/centos">centos</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/tomcat">tomcat</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>The default yum packages for tomcat and tomcat-jsvc (version <code>7.0.54-2.el7_1</code>)
+are broken on CentOS 7 (we&#39;re currently on <code>7.1.1503</code>). Newer packages available
+from Fedora don&#39;t help. Here&#39;s how to make things work.</p>
+<!-- more -->
+<p><a href="https://commons.apache.org/proper/commons-daemon/jsvc.html">Jsvc</a>
+is part of
+Apache commons daemon and makes Java apps (in this case Tomcat) behave nicer
+on Unix. A JVM app can run as a Unix daemon, and it can start as root to open
+files (including binding to privileged network ports like 80) and then
+downgrade capabilities to a non-privileged user (like &quot;tomcat&quot;). Unfortunately
+the systemd setup is broken
+(<a href="https://bugs.centos.org/view.php?id=9097">see bug 9097</a>).
+The tomcat package scripts
+contain jsvc provisions, but just plain don&#39;t work.</p>
+<p>Start by replacing file <code>/usr/lib/systemd/system/tomcat-jsvc.service</code>:</p>
+<pre><code># Systemd unit file for tomcat
+#
+# To create clones of this service:
+# 1) By default SERVICE_NAME=tomcat. When cloned, the value must be defined
+# before tomcat-sysd is called.
+# 2) Create /etc/sysconfig/${SERVICE_NAME} from /etc/sysconfig/tomcat
+# to override tomcat defaults
+
+[Unit]
+Description=Apache Tomcat Web Application Container JSVC wrapper
+After=syslog.target network.target
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/tomcat/tomcat.conf
+Environment=&quot;NAME=&quot; &quot;USE_JSVC=true&quot;
+EnvironmentFile=-/etc/sysconfig/tomcat
+ExecStart=/usr/libexec/tomcat/server start
+ExecStop=/usr/libexec/tomcat/server stop
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>and file <code>/usr/libexec/tomcat/functions</code>:</p>
+<pre><code>#!/bin/bash
+
+if [ -r /usr/share/java-utils/java-functions ]; then
+  . /usr/share/java-utils/java-functions
+else
+  echo &quot;Can&#39;t read Java functions library, aborting&quot;
+  exit 1
+fi
+
+_save_function() {
+  local ORIG_FUNC=$(declare -f $1)
+  local NEWNAME_FUNC=&quot;$2${ORIG_FUNC#$1}&quot;
+  eval &quot;$NEWNAME_FUNC&quot;
+}
+
+run_jsvc() {
+  JSVC=/usr/bin/jsvc
+  if [ -x ${JSVC} ]; then
+    TOMCAT_USER=&quot;tomcat&quot;
+    OUTFILE=${CATALINA_BASE}/logs/catalina${NAME}.out
+
+    # pre-create the output file so we can change the owner so jsvc can later reopen it
+    /usr/bin/touch ${OUTFILE}
+    /usr/bin/chmod 0644 ${OUTFILE}
+    if [ &quot;$UID&quot; = &quot;0&quot; ]; then
+      /usr/bin/chown ${TOMCAT_USER} ${OUTFILE}
+
+      # guess that there&#39;s a group of the same name, but ignore errors
+      /usr/bin/chgrp ${TOMCAT_USER} ${OUTFILE} &gt;/dev/null 2&gt;&amp;1 || true
+    fi
+
+    JSVC_OPTS=&quot;-pidfile /var/run/jsvc-tomcat${NAME}.pid -user ${TOMCAT_USER} -outfile ${OUTFILE} -errfile &amp;1&quot;
+    if [ &quot;$1&quot; = &quot;stop&quot; ]; then
+      JSVC_OPTS=&quot;${JSVC_OPTS} -nodetach -stop&quot;
+    fi
+
+    exec &quot;${JSVC}&quot; ${JSVC_OPTS} ${FLAGS} -classpath &quot;${CLASSPATH}&quot; ${OPTIONS} &quot;${MAIN_CLASS}&quot; &quot;${@}&quot;
+  else
+    echo &quot;Can&#39;t find ${JSVC} executable&quot;
+  fi
+}
+
+_save_function run run_java
+
+run() {
+   if [ &quot;${USE_JSVC}&quot; = &quot;true&quot; ] ; then
+    run_jsvc $@
+   else
+    run_java $@
+   fi
+}
+</code></pre><p>In addition, the base tomcat package is missing the library JAR file
+<code>tomcat-dbcp.jar</code>. You&#39;ll have to pull that out of a
+<a href="http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.54/bin/">matching version</a>
+of the
+<a href="http://archive.apache.org/dist/tomcat/tomcat-7/">binary distribution</a>
+of Tomcat. Place the file <code>tomcat-dbcp.jar</code> into directory <code>/usr/share/java/tomcat</code>.</p>
+<p>You should also:</p>
+<ol>
+<li>pre-create (touch) the process ID file <code>/run/jsvc-tomcat.pid</code> as user <code>tomcat:tomcat</code> with permissions <code>0644</code></li>
+<li><p>mask (hide) the standard tomcat service:</p>
+<p>sudo systemctl stop tomcat.service
+sudo systemctl mask tomcat.service</p>
+</li>
+<li><p>reload systemd config to see the new setup:</p>
+<p>sudo systemctl daemon-reload</p>
+</li>
+</ol>
+<p>You probably also want to edit <strong><code>/etc/logrotate.d/tomcat</code></strong>:</p>
+<pre><code>/var/log/tomcat/catalina.out {
+    weekly
+    rotate 52
+    compress
+    missingok
+    create 0644 tomcat tomcat
+    postrotate
+        /usr/bin/kill -USR1 `/usr/bin/cat /var/run/jsvc-tomcat.pid`
+    endscript
+}
+</code></pre><p>Now you will use systemd to control tomcat:</p>
+<pre><code>sudo systemctl enable tomcat-jsvc
+sudo systemctl start tomcat-jsvc
+sudo systemctl stop tomcat-jsvc
+</code></pre>
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2015/12/grails-2-3-11-with-java8">Grails 2.3.11 with Java8</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2014/10/better-structured-date-editor-for-grails">Better structured date editor for Grails</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

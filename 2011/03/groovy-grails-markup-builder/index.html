@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Groovy (Grails) markup builder for select/option menu</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Groovy (Grails) markup builder for select/option menu</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2011-03-31T12:29:35-0600">2011-03-31</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/groovy">groovy</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>I was trying to use the Groovy XML MarkupBuilder to have Grails output an HTML
+fragment for an AJAX call and just couldn&#39;t get it to work. I wanted to
+generate an HTML select/option menu from a list of lists:</p>
+<!-- more -->
+<pre><code>assert results == [[null,null], [17, &#39;foo&#39;], [42, &#39;bar&#39;], [69, &#39;bahz&#39;]]
+</code></pre><p>(That list was returned from a Hibernate Criteria Builder with some
+specialized projections.)</p>
+<p>First I tried to do it simply, following Grails docs:</p>
+<!-- more -->
+<pre><code>render {
+  select(size:10) {
+    results.each {
+      if (it[0] &amp;&amp; it[1])
+        option( value:it[0], it[1] )
+      }
+    }
+  }
+</code></pre><p>I kept getting a blank list. Eventually I figured out that the Grails GSP
+select tag was interfering with the markup builder DSL, so I tried using that,
+with list access code in a closure in a GString expression:</p>
+<pre><code>render {
+  g.select from:results, optionKey:&quot;${{it[0]}}&quot;, optionValue:&quot;${{it[1]}}&quot;
+  }
+</code></pre><p>Except that both expressions are in the same block and share <code>it</code>. So we have
+to use different explicit closure parameters:</p>
+<pre><code>render {
+  g.select from:results, optionKey:&quot;${{itk -&gt; itk[0]}}&quot;, optionValue:&quot;${{itv-&gt;itv[1]}}&quot;
+  }
+</code></pre><p>but that fails with an error like:</p>
+<pre><code>`No signature of method: java.io.StringWriter.getAt() is applicable for
+argument types: (java.lang.Integer) values: [0] Possible solutions:
+getAt(java.lang.String)`
+</code></pre><p>so I tried making the indices into strings:</p>
+<pre><code>render {
+  g.select from:results, optionKey:&quot;${{itk -&gt; itk[&#39;0&#39;]}}&quot;, optionValue:&quot;${{itv-&gt;itv[&#39;1&#39;]}}&quot;
+  }
+</code></pre><p>which resulted in the error:</p>
+<pre><code>No such property: 0 for class: java.io.StringWriter
+</code></pre><p>The Grails docs give the example</p>
+<pre><code>optionValue=&quot;${{it.title?.toUpperCase()}}&quot;
+</code></pre><p>which makes it seem like real code is available. But the <code>itk</code>/<code>itv</code> closure
+parameters apparently aren&#39;t <em>really</em> the list values, which would happily
+accept the Groovy magic <code>Object.getAt()</code> method.
+Something like this seemed to work:</p>
+<pre><code>render { builder -&gt;
+  builder.select(size:10,onchange:&quot;myJsFunc(this);&quot;) {
+  results.each {
+    if (it[0] &amp;&amp; it[1])
+      option( value:it[0], it[1] )
+    }
+  }
+}
+</code></pre><p>If you&#39;re in Grails (and not just straight Groovy), really try to use a view
+for this!</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2011/04/gorm-nullables-and-unsaved-transient-instance">GORM nullables and unsaved transient instance</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2010/12/subversion-repository-to-git-subdirectory">Subversion repository to git subdirectory</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

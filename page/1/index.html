@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <section id="posts">
+      <ul id="postlist">
+  
+          <li class="postitem"><h2><a href="/2016/07/updated-eagle-fire-garfield-randomizer">Updated Eagle_Fire Garfield Randomizer</a></h2>
+            2016-07-11          <p>The comic strip Garfield is generally rather banal, but if the three panels
+  are selected randomly from the archive, then the resulting strip can be
+  surreal.</p>
+            <a href="/2016/07/updated-eagle-fire-garfield-randomizer">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2015/12/grails-2-3-11-with-java8">Grails 2.3.11 with Java8</a></h2>
+            2015-12-22          <p>Grails 2.3.11 (or any 2.3.x) does not work with Java8 (<code>jdk1.8.0_40</code> or
+  later). Following are some notes on how to get things working.</p>
+            <a href="/2015/12/grails-2-3-11-with-java8">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2015/11/tomcat-jsvc-on-centos-7">Tomcat Jsvc on CentOS 7</a></h2>
+            2015-11-09          <p>The default yum packages for tomcat and tomcat-jsvc (version <code>7.0.54-2.el7_1</code>)
+  are broken on CentOS 7 (we&#39;re currently on <code>7.1.1503</code>). Newer packages available
+  from Fedora don&#39;t help. Here&#39;s how to make things work.</p>
+            <a href="/2015/11/tomcat-jsvc-on-centos-7">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2014/10/better-structured-date-editor-for-grails">Better structured date editor for Grails</a></h2>
+            2014-10-13          <p>It&#39;s really surprising and annoying that the default structured editor for
+  dates and times in Grails is so limited. It only allows one to edit (or enter)
+  time information down to the minute. Seconds and smaller are ignored, even
+  though the editor specifically returns an epoch time in milliseconds with the
+  <code>getTime()</code> method! The default editor also only works for <code>java.util.Date</code>
+  and <code>java.sql.Date</code> -- not the also common <code>java.sql.Timestamp</code>.</p>
+            <a href="/2014/10/better-structured-date-editor-for-grails">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2014/08/grails-plugin-dependencies-issues">grails plugin dependencies issues</a></h2>
+            2014-08-29          <p>We&#39;ve been banging our heads over some quirks and inconsistencies that we
+  eventually traced to plugin dependency naming in Grails 2.3.x. My main Grails
+  app gets its domain classes from a local plugin. That plugin needs the
+  Hibernate and JodaTime plugins. Spelling the plugin names can be confusing and
+  caused problems with run-app and run-script.</p>
+            <a href="/2014/08/grails-plugin-dependencies-issues">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2012/01/mysql-history-munging">mysql history munging</a></h2>
+            2012-01-17          <p>At work, I run the mysql clients on multiple hosts with multiple versions. My
+  home directory is a network mount and thus my .mysql_history file is shared
+  between all these hosts. Often the command history gets weirdly munged, with
+  spaces converted to <code>\040</code> -- the character sequence for the octal escape code
+  for ASCII space. Here&#39;s a little workaround/fix:</p>
+            <a href="/2012/01/mysql-history-munging">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/10/grails-plugin-ckeditor-with-aspell">Grails plugin CKEditor with aspell</a></h2>
+            2011-10-24          <p>Here&#39;s an info dump of some things I did to get Linux aspell-based spell
+  checking working with the Grails CKEditor plugin.</p>
+            <a href="/2011/10/grails-plugin-ckeditor-with-aspell">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/10/ckeditor-spellchecker-jsp">CKEditor spellchecker.jsp</a></h2>
+            2011-10-24          <p>Here is a JSP version of the server-side script needed for the CKEditor plugin
+  for aspell.</p>
+            <a href="/2011/10/ckeditor-spellchecker-jsp">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/10/grails-and-cgi">Grails and CGI</a></h2>
+            2011-10-24          <p>Here&#39;s how to get CGI working in a Grails app.</p>
+            <a href="/2011/10/grails-and-cgi">(read more)</a>
+          </li>
+  
+          <li class="postitem"><h2><a href="/2011/06/grails-standalone-classes-need-package">Grails standalone classes need package</a></h2>
+            2011-06-28          <p>I was reminded again today that standalone classes in Grails must belong to a
+  package. That is, a class in <code>src/groovy</code> or <code>src/java</code> needs to be in a
+  package. For example:</p>
+            <a href="/2011/06/grails-standalone-classes-need-package">(read more)</a>
+          </li>
+  
+      </ul>
+  </section>
+
+  <section id="nav">
+  
+        <span class="footer-span">
+          <a class="plain" href="/page/2/index.html">Older</a>
+        </span>
+  </section>
+  
+  <footer>
+      <span class="footer-span">
+        <a class="plain" href="/about/">About</a>
+      </span>
+  </footer>
+
+</body>
+</html>

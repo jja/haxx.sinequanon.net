@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails plugin CKEditor with aspell</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails plugin CKEditor with aspell</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2011-10-24T17:40:56-0600">2011-10-24</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/aspell">aspell</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/ckeditor">ckeditor</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Here&#39;s an info dump of some things I did to get Linux aspell-based spell
+checking working with the Grails CKEditor plugin.</p>
+<!-- more -->
+<p>File <code>grails-app/conf/Config.groovy</code></p>
+<pre><code>ckeditor {
+    config = &quot;/js/ckeditor/ckconfig.gsp&quot; // CKEDITOR.config.customConfig ; note the gsp extension
+    }
+</code></pre><p>File <code>web-app/js/ckeditor/ckconfig.gsp</code></p>
+<pre><code>&lt;%@ page contentType=&quot;text/javascript&quot; %&gt;
+// http://grails.1312388.n4.nabble.com/ckeditor-custom-plugins-tp2717404p2718562.html
+//CKEDITOR.plugins.addExternal(&#39;aspell&#39;, &#39;${request.contextPath}/js/ckeditor/plugins/aspell/&#39;);
+CKEDITOR.plugins.addExternal(&#39;aspell&#39;, &#39;${resource(dir:&quot;js/ckeditor/plugins/aspell/&quot;)}&#39;);
+CKEDITOR.editorConfig = function( config )
+{
+    config.removePlugins = &#39;filebrowser,ofm,flash,save,font&#39;;
+    config.extraPlugins = &#39;aspell&#39;;
+    config.toolbar_zinc =
+            [
+                { name: &#39;document&#39;, items : [ &#39;Bold&#39;, &#39;Italic&#39;, &#39;NumberedList&#39;, &#39;BulletedList&#39;, &#39;Blockquote&#39;, &#39;Subscript&#39;, &#39;Superscript&#39;, &#39;SpecialChar&#39;, &#39;-&#39;, &#39;RemoveFormat&#39; ] },
+                { name: &#39;tools&#39;, items : [ &#39;Source&#39;, &#39;ShowBlocks&#39;, &#39;-&#39;, &#39;About&#39;, &#39;Maximize&#39; ] },
+                &#39;/&#39;,
+                { name: &#39;clipboard&#39;, items : [ &#39;Cut&#39;, &#39;Copy&#39;, &#39;Paste&#39;, &#39;PasteText&#39;, &#39;PasteFromWord&#39;, &#39;-&#39;, &#39;Undo&#39;, &#39;Redo&#39; ] },
+                { name: &#39;editing&#39;, items : [ &#39;Find&#39;, &#39;Replace&#39;, &#39;-&#39;, &#39;SelectAll&#39;, &#39;-&#39;, &#39;SpellCheck&#39; ] },
+            ]
+};
+</code></pre><p>Get aspell.7z, system pacakges aspell and aspell-en (or your language), and
+CKEditor plugin aspell. Add the following:</p>
+<p>File <code>web-app/js/ckeditor/plugins/aspell/dialogs/aspell.js</code></p>
+<pre><code>oSpeller.spellCheckScript = editor.plugins.aspell.path+&#39;spellerpages/server-scripts/spellchecker.jsp&#39;;
+</code></pre><p>File <code>web-app/js/ckeditor/plugins/aspell/spellerpages/server-scripts/spellchecker.jsp</code>
+is documented in <a href="/2011/10/ckeditor-spellchecker-jsp/">another post about spellchecker</a></p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2012/01/mysql-history-munging">mysql history munging</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2011/10/ckeditor-spellchecker-jsp">CKEditor spellchecker.jsp</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Phusion passenger calls home</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Phusion passenger calls home</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2010-05-14T11:07:14-0600">2010-05-14</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/rails">rails</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>While on a ship at sea with slow (sometimes no) internet, I was developing a
+Ruby on Rails application for local (onboard/intranet) use. I discovered that
+Phusion passenger (modrails) calls home. This error layout file:</p>
+<!-- more -->
+<pre><code>/usr/lib/ruby/gems/1.8/gems/passenger-2.2.11/lib/phusion_passenger/templates/error_layout.html.erb
+</code></pre><p>has a stylesheet link to modrails.org</p>
+<p>Theoretically this layout will happen only in development, because we all
+completely test our code, but you may want to comment the offending line
+everywhere you have it installed. At best this is rather annoying on slow
+connections or disconnected laptops. At worst, it&#39;s some devious tracking of
+modrails users.</p>
+<p>The image link could be removed with no loss of functionality. To maintain the
+&quot;prettiness&quot;, it could be loaded as a data URI although older browsers don&#39;t
+recognize that. In any case, the developers are rather
+<a href="http://code.google.com/p/phusion-passenger/issues/detail?id=496">uninterested in changing</a>.</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2010/05/moinmoin-calls-home">Moinmoin calls home</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2009/06/security-policy">Security policy permissions for Grails in Tomcat</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails .gitignore</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails .gitignore</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2008-09-18T13:14:06-0600">2008-09-18</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/git">git</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>I&#39;ve started playing with <a href="http://git.or.cz/">git</a> for source code revision
+management. Here is my first cut at a .gitignore for a Grails 1.0.3 project.</p>
+<!-- more -->
+<p>Note that for previous versions you will also need (at least) a line
+<code>/plugins/core</code></p>
+<pre><code># .gitignore for Grails 1.0.3
+
+# web application files that are overwritten by &quot;grails upgrade&quot;
+#  cf. GRAILS_HOME/scripts/Upgrade.groovy, target( upgrade )
+/web-app/WEB-INF
+
+# IDE support files that are overwritten by &quot;grails upgrade&quot;
+#  cf. GRAILS_HOME/scripts/CreateApp.groovy, target( createIDESupportFiles )
+# to be specific, you could replace &quot;/*&quot; below with your project name,
+#  e.g. &quot;foobar.launch&quot; (no slash)
+.classpath
+.project
+.settings
+/*.launch
+/*.tmproj
+
+# logs
+stacktrace.log
+/test/reports
+
+# project release file
+*.war
+</code></pre><p>Edit: took out build.xml since grails won&#39;t overwrite it. The eclipse dot
+files <code>.classpath</code>, <code>.project</code>, and <code>.settings</code> will also not be overwritten
+if they exist, but I&#39;m still ignoring them for now.</p>
+<p>Update: I&#39;ve made a few additions for Grails 1.1:
+<a href="/wp-content/uploads/2008/09/gitignore11">gitignore11</a></p>
+<h2 id="comments">Comments</h2>
+<p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2009-10-19 12:41:41</p>
+<p>For Grails 1.2, add a line for a new build directory:</p>
+<pre><code>/target
+</code></pre>
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2008/09/grails-testing">Grails testing</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2008/09/fluxbox-startup-and-shutdown-script">Fluxbox startup and shutdown script</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

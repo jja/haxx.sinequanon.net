@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Better structured date editor for Grails</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Better structured date editor for Grails</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2014-10-13T12:12:50-0600">2014-10-13</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/joda">joda</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/spring">spring</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>It&#39;s really surprising and annoying that the default structured editor for
+dates and times in Grails is so limited. It only allows one to edit (or enter)
+time information down to the minute. Seconds and smaller are ignored, even
+though the editor specifically returns an epoch time in milliseconds with the
+<code>getTime()</code> method! The default editor also only works for <code>java.util.Date</code>
+and <code>java.sql.Date</code> -- not the also common <code>java.sql.Timestamp</code>.</p>
+<!-- more -->
+<p>I&#39;ve created a new editor that works for all 3 types mentioned and allows one
+to edit/enter more complete time information, including seconds (yeah!),
+millisecond or nanosecond, and also allows the use of an &quot;epoch&quot; time field to
+edit a raw integer.</p>
+<p>See the editor code at
+<a href="https://github.com/jja/grails-jja-extensions-plugin/blob/master/src/java/net/sinequanon/grails/StructuredDateOrTimestampEditor.java">StructuredDateOrTimestampEditor.java (GitHub)</a>
+or <a href="/wp-content/uploads/2015/01/StructuredDateOrTimestampEditor.java_.txt">download StructuredDateOrTimestampEditor.java</a></p>
+<p>I setup the editor in my own registrar class, e.g.
+<code>src/groovy/mypackage/CustomPropertyEditorRegistrar.groovy</code>
+where I make several editor customizations:</p>
+<pre><code>import org.springframework.beans.PropertyEditorRegistrar;
+import org.springframework.beans.PropertyEditorRegistry;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import java.beans.PropertyEditor;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
+import java.math.BigDecimal;
+import java.util.Locale;
+import edu.ucar.eol.spring.SqlTimestampPropertyEditor;
+import edu.ucar.eol.grails.StructuredDateOrTimestampEditor;
+public class CustomPropertyEditorRegistrar implements PropertyEditorRegistrar {
+  public void registerCustomEditors(PropertyEditorRegistry registry) {
+    registry.registerCustomEditor(java.sql.Timestamp.class, new StructuredDateOrTimestampEditor());
+    registry.registerCustomEditor(java.util.Date.class, new StructuredDateOrTimestampEditor());
+    registry.registerCustomEditor(java.sql.Date.class, new StructuredDateOrTimestampEditor());
+  }
+}
+</code></pre><p>and then register the bean with Spring <code>grails-app/conf/spring/resources.groovy</code>:</p>
+<pre><code>beans = {
+  CustomPropertyEditorRegistrar(mypackage.CustomPropertyEditorRegistrar)
+}
+</code></pre><p>Finally, to make use of it you&#39;ll need the proper HTML in your view. I&#39;m also
+using Joda time, and modified the Grails plugin&#39;s taglib at
+<a href="https://github.com/jja/grails-jja-extensions-plugin/blob/master/grails-app/taglib/net/sinequanon/grails/DateTimeTagLib.groovy">DateTimeTagLib.groovy (GitHub)</a>
+or <a href="/wp-content/uploads/2015/01/DateTimeTagLib.groovy.txt">download DateTimeTagLib.groovy</a></p>
+<p>It has all worked great so far.</p>
+<p>Sorry, I don&#39;t have any real tests but here are some things you can try in
+your <code>grails shell</code> :</p>
+<pre><code>sed = new net.sinequanon.grails.StructuredDateOrTimestampEditor(&quot;yyyy-MM-dd HH:mm:ss.S&quot;)
+ts = sed.assemble(java.sql.Timestamp, [epoch:&#39;1&#39;])
+===&gt; 1970-01-01 00:00:00.001
+ts = sed.assemble(java.sql.Timestamp, [:])
+===&gt; null
+ts = sed.assemble(java.sql.Timestamp, [year:&#39;2014&#39;, millisecond:&#39;123&#39;])
+===&gt; 2014-01-01 00:00:00.123
+ts = sed.assemble(java.sql.Timestamp, [year:&#39;2014&#39;, nanosecond:&#39;456&#39;])
+===&gt; 2014-01-01 00:00:00.000000456
+// nanosecond takes precedence over millisecond
+ts = sed.assemble(java.sql.Timestamp, [year:&#39;2014&#39;, millisecond:&#39;123&#39;, nanosecond:&#39;456&#39;])
+===&gt; 2014-01-01 00:00:00.000000456
+ts = sed.assemble(java.sql.Timestamp, [year:&#39;2014&#39;, epoch:&#39;5&#39;, millisecond:&#39;123&#39;])
+===&gt; 1970-01-01 00:00:00.005
+// epoch is milliseconds and sets the time before nanosecond overwrites the fractional portion
+ts = sed.assemble(java.sql.Timestamp, [year:&#39;2014&#39;, epoch:&#39;5&#39;, nanosecond:&#39;456&#39;])
+===&gt; 1970-01-01 00:00:00.000000456
+</code></pre><h2 id="references">References</h2>
+<ul>
+<li><a href="https://github.com/grails/grails-core/blob/2.3.x/grails-web/src/main/groovy/org/codehaus/groovy/grails/web/binding/StructuredDateEditor.java">StructuredDateEditor.java</a></li>
+<li><a href="https://github.com/grails/grails-core/blob/2.3.x/grails-web/src/main/groovy/org/codehaus/groovy/grails/web/binding/StructuredPropertyEditor.java">StructuredPropertyEditor.java</a></li>
+<li><a href="https://github.com/grails/grails-core/blob/2.3.x/grails-plugin-gsp/src/main/groovy/org/codehaus/groovy/grails/plugins/web/taglib/FormTagLib.groovy">FormTagLib.groovy</a></li>
+<li><a href="https://github.com/grails/grails-core/blob/2.3.x/grails-web/src/main/groovy/org/codehaus/groovy/grails/web/binding/GrailsDataBinder.java">GrailsDataBinder.java</a></li>
+<li><a href="https://github.com/grails/grails-core/blob/2.3.x/grails-core/src/main/groovy/org/codehaus/groovy/grails/commons/GrailsClassUtils.java">GrailsClassUtils.java</a></li>
+<li><a href="https://github.com/spring-projects/spring-framework/blob/3.2.x/spring-beans/src/main/java/org/springframework/beans/propertyeditors/CustomDateEditor.java">CustomDateEditor.java (Spring)</a></li>
+<li><a href="https://github.com/JodaOrg/joda-time/blob/v1.6_BRANCH/JodaTime/src/main/java/org/joda/time/format/DateTimeFormatterBuilder.java">DateTimeFormatterBuilder.java (Joda)</a></li>
+<li><a href="https://github.com/JodaOrg/joda-time/blob/v1.6_BRANCH/JodaTime/src/main/java/org/joda/time/DateTimeFieldType.java">DateTimeFieldType.java (Joda)</a></li>
+<li><a href="https://github.com/JodaOrg/joda-time/blob/v1.6_BRANCH/JodaTime/src/main/java/org/joda/time/format/ISODateTimeFormat.java">ISODateTimeFormat.java (Joda)</a></li>
+</ul>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2015/11/tomcat-jsvc-on-centos-7">Tomcat Jsvc on CentOS 7</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2014/08/grails-plugin-dependencies-issues">grails plugin dependencies issues</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

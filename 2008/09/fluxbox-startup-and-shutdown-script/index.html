@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Fluxbox startup and shutdown script</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Fluxbox startup and shutdown script</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2008-09-11T12:50:29-0600">2008-09-11</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/fluxbox">fluxbox</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>The default Fluxbox startup file at <code>~/.fluxbox/startup</code> is run by
+startfluxbox and has embedded comments describing how to add applications
+(&quot;apps&quot;) to run before Fluxbox starts up. The startup file can be fixed to
+also run apps after Fluxbox starts or after Fluxbox finishes. You might run
+apps after Fluxbox startup to be sure that Fluxbox applies its window
+position/decoration settings or puts the programs in the slit. Running apps
+after Fluxbox finishes is useful to cleanup things that were started earlier.
+The example startup file given below covers both situations.</p>
+<!-- more -->
+<h2 id="starting-apps-after-fluxbox-starts">Starting apps after Fluxbox starts</h2>
+<p>The <a href="http://fluxbox-wiki.org/index.php/Fluxbox-wiki">Fluxbox-wiki</a>
+has a description of how to
+<a href="http://fluxbox-wiki.org/index.php/Editing_the_startup_file">edit the startup file</a>.
+Towards the bottom is a section,
+<a href="http://fluxbox-wiki.org/index.php/Editing_the_startup_file#How_do_I_start_an_application_after_fluxbox_starts">&quot;How do I start an application after fluxbox starts&quot;</a>
+with an example startup file that has a bug. Remove the word <code>exec</code> on the
+line <code>exec fluxbox &amp;</code>. Also, the <code>{</code> and <code>} &amp;</code> are unnecessary. (I wanted to
+edit the wiki, but there is no way to create an account, much less get
+permission to edit.)</p>
+<h2 id="running-apps-after-fluxbox-finishes">Running apps after Fluxbox finishes</h2>
+<p>To run apps after Fluxbox has finished, simply add them to the end of the
+startup file (after <code>wait $fbpid</code>). Do not use the ampersand (<code>&amp;</code>) on the end
+of the line, as that will potentially leave the apps running after you logout.
+You want only short, cleanup-style apps here.</p>
+<h2 id="example">Example</h2>
+<p>Here is my startup file that accomplishes all the tasks described.</p>
+<pre><code>#!/bin/sh
+# this file is ~/.fluxbox/startup
+#
+# Lines starting with a &#39;#&#39; are ignored.
+
+# Configurations and setups
+fbsetroot -solid gray
+xset -b
+xmodmap ~/.Xmodmap
+
+# Applications you want to run with fluxbox.
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN &amp; AT THE END.
+#
+# unclutter -idle 2 &amp;
+# wmnd &amp;
+# wmsmixer -w &amp;
+# idesk &amp;
+
+gnome-screensaver &amp;
+firefox &amp;
+gnome-terminal --geometry=132x38+0+168 &amp;
+
+# start fluxbox in background and save its process ID
+#fluxbox -log ~/.fluxbox/log &amp;
+fluxbox &amp;
+fbpid=$!
+
+# wait for fluxbox to actually get going by sleeping for 1 second (modify as needed)
+sleep 1
+
+# Applications that need to have fluxbox already running
+# MAKE SURE THAT APPS THAT KEEP RUNNING HAVE AN &amp; AT THE END.
+#
+# gkrellm &amp;
+# gdesklets &amp;
+gxmms2 &amp;
+
+# wait for fluxbox to end and save its exit status
+wait $fbpid
+fbstatus=$?
+
+# Applications to perform cleanup after fluxbox has finished
+# DON&#39;T USE &amp; HERE OR THE APP MAY KEEP RUNNING AFTER YOU LOGOUT
+# THESE APPS SHOULD END FAST; YOU WON&#39;T LOGOUT UNTIL THEY&#39;RE DONE
+#
+# make sure music has stopped
+xmms2 stop
+
+# exit with fluxbox&#39;s exit status
+exit $fbstatus
+</code></pre><p>(end)</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2008/09/grails-gitignore">Grails .gitignore</a>
+      </span>
+
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Grails and CGI</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Grails and CGI</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2011-10-24T17:10:30-0600">2011-10-24</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/cgi">cgi</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/grails">grails</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Here&#39;s how to get CGI working in a Grails app.</p>
+<!-- more -->
+<p>Install a copy of web.xml:</p>
+<pre><code>grails install-templates
+</code></pre><p>then edit it:</p>
+<pre><code>src/templates/war/web.xml
+</code></pre><p>adding these elements in their appropriate sections. Some other instructions
+and the Tomcat encourage you to edit the main Tomcat web.xml, but that won&#39;t
+help you in development mode with <code>grails run-app</code> and also adds CGIs to all
+other webapps (if they&#39;re privileged).</p>
+<p>First the servlet (there are other configurable parameters available):</p>
+<pre><code>    &lt;!-- Common Gateway Interface (CGI) processing servlet --&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;cgi&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;org.apache.catalina.servlets.CGIServlet&lt;/servlet-class&gt;
+        &lt;init-param&gt;
+          &lt;param-name&gt;debug&lt;/param-name&gt;
+          &lt;param-value&gt;0&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;init-param&gt;
+          &lt;param-name&gt;cgiPathPrefix&lt;/param-name&gt;
+          &lt;param-value&gt;WEB-INF/cgi&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;load-on-startup&gt;5&lt;/load-on-startup&gt;
+    &lt;/servlet&gt;
+</code></pre><p>and the servlet-mapping:</p>
+<pre><code>    &lt;!-- The mapping for the CGI Gateway servlet --&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;cgi&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/cgi-bin/*&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+</code></pre><p>Here&#39;s the secret part. Edit <code>scripts/Events.groovy</code> to make your webapp
+privileged:</p>
+<pre><code>eventConfigureTomcat = { tomcat -&gt;
+    def ctx=tomcat.host.findChild(serverContextPath)
+    ctx.privileged = true
+}
+</code></pre><p>Then put your CGI script in <code>web-app/WEB-INF/cgi/</code></p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="http://tomcat.apache.org/tomcat-6.0-doc/cgi-howto.html">official Tomcat docs</a></li>
+<li><a href="http://grails.1312388.n4.nabble.com/tomcat-plugin-where-is-server-xml-and-tomcat-users-xml-td1322273.html">Grails-user post discussing Tomcat config</a></li>
+<li><a href="http://www.docjar.com/docs/api/org/apache/catalina/startup/Tomcat.html">Tomcat class used in Events.groovy</a></li>
+</ul>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2011/10/ckeditor-spellchecker-jsp">CKEditor spellchecker.jsp</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2011/06/grails-standalone-classes-need-package">Grails standalone classes need package</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

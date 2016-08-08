@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - CKEditor spellchecker.jsp</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>CKEditor spellchecker.jsp</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2011-10-24T17:28:50-0600">2011-10-24</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/aspell">aspell</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/ckeditor">ckeditor</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/jsp">jsp</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Here is a JSP version of the server-side script needed for the CKEditor plugin
+for aspell.</p>
+<!-- more -->
+<p>It was inspired by/based upon a
+<a href="http://cksource.com/forums/viewtopic.php?f=5&amp;t=7200">post in the forums</a>.
+I&#39;ve made some
+mods to get it to work, be more complete, and be more like the current perl
+version, with fixes recommended in the
+<a href="http://cksource.com/forums/viewtopic.php?f=11&amp;t=15893">main thread</a>.
+It&#39;s not fully tested but hopefully it will help somebody.</p>
+<p>Note that for best results, you will need
+<a href="http://commons.apache.org/lang/">Apache Commons Lang</a>.
+You can comment out that code but then
+you&#39;ll get false-positive misspellings of partial words before and after the
+HTML entities.</p>
+<p>Install the attached file as</p>
+<pre><code>.../aspell/spellerpages/server-scripts/spellchecker.jsp
+</code></pre><p>Download: <a href="/wp-content/uploads/2011/10/spellchecker.jsp_.txt">spellchecker.jsp</a></p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2011/10/grails-plugin-ckeditor-with-aspell">Grails plugin CKEditor with aspell</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2011/10/grails-and-cgi">Grails and CGI</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>

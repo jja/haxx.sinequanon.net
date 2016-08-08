@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - Subversion repository to git subdirectory</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <span class="header-span">
+        <a style="color: black; text-decoration: none;" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+      </span>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>Subversion repository to git subdirectory</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2010-12-08T16:59:03-0700">2010-12-08</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/git">git</a>
+              </li>
+              <li class="tagitem">
+                <a class="tag" href="/tag/svn">svn</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>Here&#39;s how I converted, or moved, a Subversion (svn) repository to a
+subdirectory in a new git repository, with history (but no branches or tags).</p>
+<!-- more -->
+<p>Make the svn repo into a git repo (of course, be careful of the linewraps
+throughout):</p>
+<pre><code>mkdir tmprepo1
+cd tmprepo1
+git-svn init http://URL/TO/SVN/REPO/trunk --no-metadata
+echo &#39;SVNUSER = Firstname Lastname &lt;USER@DOMAIN&gt;&#39; &gt; ~/svnusers.txt
+git config svn.authorsfile ~/svnusers.txt
+git-svn fetch
+cd ..
+git clone tmprepo1 tmprepo2
+</code></pre><p>The <code>svnusers.txt</code> file gets one line for each user that committed to the svn
+repo, where <code>SVNUSER</code> is the login of the users committing to the svn repo,
+something like:</p>
+<pre><code>jja = John Allison &lt;jja@fakedomain.com&gt;
+</code></pre><p>The <code>clone</code> gets rid of the git-svn specific stuff so the new repo is not tied
+to the old svn repo.</p>
+<p>Move the git version of the old repo into a subdirectory of a new git repo:</p>
+<p>Create a new git repo:</p>
+<pre><code>mkdir newrepo
+cd newrepo
+git init
+touch junkfile
+</code></pre><p>and commit the junkfile so the repo has something solid in it for remote and
+subtree to work with:</p>
+<pre><code>git add junkfile
+git commit -a -m &#39;create a temporary junk file so git has a good HEAD on its shoulders&#39;
+</code></pre><p>then add the old repo with remote and subtree (see references if you don&#39;t
+have git-subtree). <em>To add the old svn repo to a subdir of an existing git
+repo, you just need this part,  followed by a</em> &quot;<code>git push</code>&quot;.</p>
+<pre><code>git remote add -f tmprepo2 ../tmprepo2
+git subtree add --prefix=path/to/new/subdir tmprepo2/master
+git remote rm tmprepo2
+</code></pre><p>and cleanup everything:</p>
+<pre><code>git rm junkfile
+git commit -a -m &#39;remove temporary junk file&#39;
+cd ..
+rm -rf tmprepo1
+rm -rf tmprepo2
+rm ~/svnusers.txt
+</code></pre><p>At this point the <code>git log</code> will look something like:</p>
+<pre><code>commit 73cc6e101ffdc7e6e9489cdffc261e7bd49c8f79
+Author: John Allison &lt;jja@fakedomain.com&gt;
+Date:   Thu Dec 9 11:08:02 2010 -0700
+    remove temporary junk file
+commit d9dbcce650d9a1568436baa850e014972ac3b9b2
+Merge: 176f205... 7e3df51...
+Author: John Allison &lt;jja@fakedomain.com&gt;
+Date:   Thu Dec 9 11:07:21 2010 -0700
+    Add &#39;subdir/&#39; from commit &#39;7e3df510ae8e27e3c8244acd7dff3a5df51c275a&#39;
+    git-subtree-dir: subdir
+    git-subtree-mainline: 176f205c64e68c13a6699e0aff873582608a4262
+    git-subtree-split: 7e3df510ae8e27e3c8244acd7dff3a5df51c275a
+commit 176f205c64e68c13a6699e0aff873582608a4262
+Author: John Allison &lt;jja@fakedomain.com&gt;
+Date:   Thu Dec 9 11:02:24 2010 -0700
+    create a temporary junk file so git has a good HEAD on its shoulders
+commit 7e3df510ae8e27e3c8244acd7dff3a5df51c275a
+Author: John Allison &lt;jja@fakedomain.com&gt;
+Date:   Wed Nov 24 19:04:58 2010 +0000
+    blah blah... all the commits of the old svn repo...
+</code></pre><p>I haven&#39;t done much with my new repo yet. Please let me know if you see any
+gotchas. HTH!</p>
+<h2 id="references">References</h2>
+<ul>
+<li><a href="http://www.jonmaddox.com/2008/03/05/cleanly-migrate-your-subversion-repository-to-a-git-repository/">Cleanly Migrate Your Subversion Repository To a GIT Repository</a></li>
+<li><a href="http://stackoverflow.com/questions/3031602">How to import a svn repository underneath a git repository?</a> (watch the syntax, remote add needs another argument as I have above)</li>
+<li><a href="https://github.com/apenwarr/git-subtree">git-subtree</a>git-subtree.sh as <code>git-subtree</code> somewhere in your path)</li>
+</ul>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+      <span class="footer-span">
+        Previous:
+        <a class="plain" href="/2011/03/groovy-grails-markup-builder">Groovy (Grails) markup builder for select/option menu</a>
+      </span>
+
+      <span class="footer-span">
+        Next:
+        <a class="plain" href="/2010/10/ubuntu-on-mac-and-upgrading-to-snow-leopard">Ubuntu on Mac and upgrading to Snow Leopard</a>
+      </span>
+  </section>
+
+  <footer>
+    <span class="footer-span">
+        <a class="plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+    </span>
+  </footer>
+
+</body>
+</html>
