@@ -16,15 +16,17 @@ tags:
 ---
 
 Here are the permissions I've used for Grails apps deployed to Tomcat running
-the Java security manager. The Grails 1.0.x permissions are for a simple CRUD
+the Java security manager.
+
+<!-- more -->
+
+The Grails 1.0.x permissions are for a simple CRUD
 app. So far the Grails 1.1 permissions are just for a Hello World app. They're
 not cut-and-paste: some thought is required to apply to individual server
 setups and some duplication is present. The grants go in the
 `conf/catalina.policy` file and restarting Tomcat is required. Unfortunately,
 it seems impossible to completely isolate these per-webapp since the Groovy
 and Grails code presents itself in funny ways.
-
-<!-- more -->
 
 I'm using Tomcat 6.0.18 and used both JDK 1.6.0_12 and 1.6.0_13 running on
 some sort of Linux.

@@ -19,12 +19,12 @@ Grails 1.1 has changed logging setup completely, introducing a
 [new DSL closure](http://grails.org/doc/1.1/guide/3.%20Configuration.html#3.1.2%20Logging).
 For the most part it's cool, but the syntax looks the same sometimes for both
 log level and appender assignments. I've updated my previous posts on
-[debug logging](http://haxx.sinequanon.net/2008/09/grails-logging/)
+[debug logging](/2008/09/grails-logging/)
 and
-[stacktrace.log](http://haxx.sinequanon.net/2008/09/grails-stacktracelog/).
+[stacktrace.log](/2008/09/grails-stacktracelog/).
 For the record, included below is the complete log4j closure I'm now using for
 a new Grails 1.1 project (or
-[download](/2009/03/log4jdsl.txt)
+[download](/wp-content/uploads/2009/03/log4jdsl.txt)
 it). Append this to the default `Config.groovy` file.
 
 <!-- more -->

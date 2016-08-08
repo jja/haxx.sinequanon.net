@@ -89,12 +89,12 @@ In 1.1, `g:if` with the `env` attribute is working, so you can use:
     <g:if env="development">
 
 for the test:
-[error_11.gsp](/2008/10/error_11.txt)
+[error_11.gsp](/wp-content/uploads/2008/10/error_11.txt)
 (install as `grails-app/views/error.gsp`)
 
 In 1.2, the `createLinkTo` tag has been deprecated in favor of `resource`,
 prompting one small change to the error.gsp file:
-[error12.gsp](/2009/10/error12.txt)
+[error12.gsp](/wp-content/uploads/2009/10/error12.txt)
 
 Grails 2.3.x doesn't like the `g:resource tag` nested inside the quotes of the
 meta tag, generating a GrailsTagException with the message "Attribute value

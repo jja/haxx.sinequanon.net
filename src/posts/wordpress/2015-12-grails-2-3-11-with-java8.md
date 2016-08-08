@@ -15,13 +15,15 @@ tags:
 ---
 
 Grails 2.3.11 (or any 2.3.x) does not work with Java8 (`jdk1.8.0_40` or
-later). Following are some notes on how to get things working. Edit: this
+later). Following are some notes on how to get things working.
+
+<!-- more -->
+
+Edit: this
 information was originally documented in late 2015. While these issues may
 have since been resolved in later versions of Grails, because of the pain in
 upgrading to 2.4/2.5 or starting from scratch in 3.x, you may be stalled in
 2.3.11.
-
-<!-- more -->
 
 Grails 2.3.11 includes Spring Loaded 1.2.0 which is incompatible with Java8.
 No fix is available until Grails 2.4.5 or even 2.5.1.
