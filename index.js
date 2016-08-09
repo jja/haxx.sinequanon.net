@@ -13,7 +13,7 @@ var Handlebars  = require('handlebars');
 
 Handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
-Metalsmith(__dirname)
+var ms = Metalsmith(__dirname)
   .metadata({
     sitetitle: "haxx qua non",
     sitedescription: "tips and tricks from a working coder",
@@ -67,7 +67,9 @@ Metalsmith(__dirname)
     source: './static',
     destination: '.',
   }))
-  .use(serve())
-  .build(function(err, files) {
+
+  if ('--run' === process.argv[2]) { ms = ms.use(serve()); }
+
+  ms.build(function(err, files) {
     if (err) { throw err; }
   });
