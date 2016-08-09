@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <h1><a rel="home" href="{{ siteurl }}">{{ sitetitle }}</a></h1>
+    <h1><a class="plain header-span" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a></h1>
   </header>
 
   <h1>{{ title }}</h1>

@@ -10,9 +10,7 @@
 
   <header>
     <h1>
-      <span class="header-span">
-        <a style="color: black; text-decoration: none;" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
-      </span>
+      <a class="header-span plain" rel="home" href="{{ siteurl }}">{{ sitetitle }}</a>
     </h1>
   </header>
 
@@ -54,24 +52,16 @@
 
   <section id="nav">
     {{#if previous}}
-      <span class="footer-span">
-        Previous:
-        <a class="plain" href="/{{previous.path}}">{{previous.title}}</a>
-      </span>
+        <a class="footer-span plain" href="/{{previous.path}}">Previous: {{previous.title}}</a>
     {{/if}}
 
     {{#if next}}
-      <span class="footer-span">
-        Next:
-        <a class="plain" href="/{{next.path}}">{{next.title}}</a>
-      </span>
+        <a class="footer-span plain" href="/{{next.path}}">Next: {{next.title}}</a>
     {{/if}}
   </section>
 
   <footer>
-    <span class="footer-span">
-        <a class="plain" rel="home" href="{{ siteurl }}">Home</a>
-    </span>
+    <a class="footer-span plain" rel="home" href="{{ siteurl }}">Home</a>
   </footer>
 
 </body>
