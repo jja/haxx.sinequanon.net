@@ -21,6 +21,17 @@ based upon krlmlr's answer at
 
 <!-- more -->
 
+## Prerequisites
+
+I started from the
+[Metalsmith static-site](https://github.com/metalsmith/metalsmith/tree/master/examples/static-site)
+example, with the `build` directory in
+[`gitinore`](https://github.com/jja/haxx.sinequanon.net/blob/master/.gitignore):
+
+    # .gitignore
+    /build
+    /node_modules
+
 ## Initial setup
 
 Clone the site repo:
@@ -158,7 +169,9 @@ Pushing from the main directory sends it all to GitHub
 for serving (i.e. publishes or installs the site).
 
 All this can be done in either of two sequences.
-Committing the build (`gh-pages`) first:
+Committing the build (`gh-pages`) first feels backwards
+but let's us use the `-C` option for `git-commit` which
+re-uses the same message and timestamp, which is nice.
 
     $ cd /path/to/myrepo
     $ vi ...
@@ -172,7 +185,9 @@ Committing the build (`gh-pages`) first:
     $ git commit [-a] [-C `cat .git/refs/heads/gh-pages`]
     $ git push
 
-or committing the source (`master`) first:
+While committing the source (`master`) first will
+produce a different timestamp on the `gh-pages` commit,
+but we should be able to steal the message for automation.
 
     $ cd /path/to/myrepo
     $ vi ...
@@ -181,15 +196,17 @@ or committing the source (`master`) first:
     $ git commit ...
     $ cd build
     $ git add .
-    $ git commit -a [-m ...]
+    $ git commit -a [-m `cat ../.git/COMMIT_EDITMSG`]
     $ git push
     $ cd ..
     $ git push
 
 I have some `make install` targets for both above workflows
-which I'll commit after some testing.
+which I'll commit after some testing (currently on the
+[`feature/make-install`](https://github.com/jja/haxx.sinequanon.net/tree/feature/make-install)
+branch).
 
-## Coda
+## Comments
 
 I hope that helps.
 I don't have a commenting service (yet?) for the static site,
