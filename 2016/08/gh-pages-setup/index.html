@@ -44,7 +44,15 @@ with the <code>gh-pages</code> branch in the build directory,
 based upon krlmlr&#39;s answer at
 <a href="http://stackoverflow.com/questions/26120163/how-to-properly-commit-in-repository-with-github-pages-branch/29616287#29616287">stackoverflow</a>.</p>
 <!-- more -->
-<h2 id="initial-setup">Initial setup</h2>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>I started from the
+<a href="https://github.com/metalsmith/metalsmith/tree/master/examples/static-site">Metalsmith static-site</a>
+example, with the <code>build</code> directory in
+<a href="https://github.com/jja/haxx.sinequanon.net/blob/master/.gitignore"><code>gitinore</code></a>:</p>
+<pre><code># .gitignore
+/build
+/node_modules
+</code></pre><h2 id="initial-setup">Initial setup</h2>
 <p>Clone the site repo:</p>
 <pre><code>$ git clone git@github.com:myuser/myrepo.git
 Cloning into &#39;myrepo&#39;...
@@ -160,7 +168,9 @@ Pushing from the <code>build</code> directory syncs the static site
 Pushing from the main directory sends it all to GitHub
 for serving (i.e. publishes or installs the site).</p>
 <p>All this can be done in either of two sequences.
-Committing the build (<code>gh-pages</code>) first:</p>
+Committing the build (<code>gh-pages</code>) first feels backwards
+but let&#39;s us use the <code>-C</code> option for <code>git-commit</code> which
+re-uses the same message and timestamp, which is nice.</p>
 <pre><code>$ cd /path/to/myrepo
 $ vi ...
 $ make
@@ -172,7 +182,9 @@ $ cd ..
 $ git add ...
 $ git commit [-a] [-C `cat .git/refs/heads/gh-pages`]
 $ git push
-</code></pre><p>or committing the source (<code>master</code>) first:</p>
+</code></pre><p>While committing the source (<code>master</code>) first will
+produce a different timestamp on the <code>gh-pages</code> commit,
+but we should be able to steal the message for automation.</p>
 <pre><code>$ cd /path/to/myrepo
 $ vi ...
 $ make
@@ -180,13 +192,15 @@ $ git add ...
 $ git commit ...
 $ cd build
 $ git add .
-$ git commit -a [-m ...]
+$ git commit -a [-m `cat ../.git/COMMIT_EDITMSG`]
 $ git push
 $ cd ..
 $ git push
 </code></pre><p>I have some <code>make install</code> targets for both above workflows
-which I&#39;ll commit after some testing.</p>
-<h2 id="coda">Coda</h2>
+which I&#39;ll commit after some testing (currently on the
+<a href="https://github.com/jja/haxx.sinequanon.net/tree/feature/make-install"><code>feature/make-install</code></a>
+branch).</p>
+<h2 id="comments">Comments</h2>
 <p>I hope that helps.
 I don&#39;t have a commenting service (yet?) for the static site,
 so please email comments or suggestions
