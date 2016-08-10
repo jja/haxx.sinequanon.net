@@ -1,0 +1,36 @@
+all: build
+
+build: node_modules
+	node index.js
+
+run: node_modules
+	node index.js --run
+
+node_modules: package.json
+	npm install
+
+.PHONY: build
+
+install: src-commit build-commit build-status
+	git push
+
+src-commit:
+	git add .
+	git commit -a
+
+build-commit: build
+	@cd build && git add .
+#	 this shouldn't work because we don't track master branch in the build dir clone
+#	@-cd build && git fetch && git commit -aC `cat ../.git/refs/heads/master`
+#	 usually the message is leftover
+	@-cd build && git commit -am `cat ../.git/COMMIT_EDITMSG`
+	@cd build && git push
+
+build-status:
+	@cd build ; \
+	if [ '' != "`git status --porcelain`" ]; then \
+	  git status 1>&2 ; \
+	  echo The build directory has unclean status 1>&2 ; \
+	  exit 1 ; \
+	fi
+

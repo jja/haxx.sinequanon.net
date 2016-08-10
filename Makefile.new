@@ -1,0 +1,44 @@
+all: build
+
+build: node_modules
+	node index.js
+
+run: node_modules
+	node index.js --run
+
+node_modules: package.json
+	npm install
+
+.PHONY: build
+
+install: build-commit src-commit
+	git push
+
+build-commit: build
+	@cd build && git add .
+	@-cd build && git commit -a
+	@cd build && git push
+
+src-commit-foo: build-status
+	git add .
+#	 get build's last message
+#	git commit -am "$(shell cd build ; git log -1 --format='%s')"
+#	 simpler -- usually the message will be leftover
+	git commit -am `cat build/.git/COMMIT_EDITMSG`
+
+src-commit-bar: build-status
+	git add .
+	git commit -aC `cat build/.git/refs/heads/gh-pages`
+
+src-commit: build-status
+	git add .
+	git commit -aC `cat .git/refs/heads/gh-pages`
+
+build-status:
+	@cd build ; \
+	if [ '' != "`git status --porcelain`" ]; then \
+	  git status 1>&2 ; \
+	  echo The build directory has unclean status 1>&2 ; \
+	  exit 1 ; \
+	fi
+
