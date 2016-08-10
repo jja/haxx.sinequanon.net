@@ -196,7 +196,7 @@ but we should be able to steal the message for automation.
     $ git commit ...
     $ cd build
     $ git add .
-    $ git commit -a [-m `cat ../.git/COMMIT_EDITMSG`]
+    $ git commit -a [-m "`cat ../.git/COMMIT_EDITMSG`"]
     $ git push
     $ cd ..
     $ git push
