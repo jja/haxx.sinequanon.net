@@ -12,6 +12,9 @@ wordpress_id: 123
 Tips and tricks from my life as a working coder. Often characteristic of nothing, sometimes essential, but at least personally useful.
 
 John J. Allison  
-jja at sinequanon dot net  
-Boulder, Colorado, USA  
-
+Boulder, Colorado, USA
+  
+[jja@sinequanon.net](mailto:jja@sinequanon.net)  
+[github/jja](https://github.com/jja/)
+  
+I am available for contract or hire work.
