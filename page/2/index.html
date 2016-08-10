@@ -17,6 +17,13 @@
   <section id="posts">
       <ul id="postlist">
   
+          <li class="postitem"><h2><a href="/2011/06/grails-standalone-classes-need-package">Grails standalone classes need package</a></h2>
+            2011-06-28          <p>I was reminded again today that standalone classes in Grails must belong to a
+  package. That is, a class in <code>src/groovy</code> or <code>src/java</code> needs to be in a
+  package. For example:</p>
+            <a href="/2011/06/grails-standalone-classes-need-package">(read more)</a>
+          </li>
+  
           <li class="postitem"><h2><a href="/2011/04/gorm-nullables-and-unsaved-transient-instance">GORM nullables and unsaved transient instance</a></h2>
             2011-04-05          <p>I have nullable one-to-many relations in Grails/GORM and started getting
   &quot;object references an unsaved transient instance&quot; exceptions from Hibernate.
@@ -91,16 +98,6 @@
   <a href="/wp-content/uploads/2009/03/log4jdsl.txt">download</a>
   it). Append this to the default <code>Config.groovy</code> file.</p>
             <a href="/2009/03/grails-11-logging">(read more)</a>
-          </li>
-  
-          <li class="postitem"><h2><a href="/2009/03/less-sudo-and-devnull-permission-denied">less, sudo, and /dev/null: Permission denied</a></h2>
-            2009-03-25          <p>Sigh. The ubiquitous utility <strong>less</strong> does a really bad and hard to understand
-  thing. For some time now, it behaves not just as a reader but also a writer:
-  it writes a history file (specified by the environment variable <code>LESSHISTFILE</code>
-  which is <code>$HOME/.lesshst</code> by default). If <strong>you</strong> want less to be <strong>writing</strong>
-  things, fine, but don&#39;t force it on <strong>me</strong>! This has caused some annoying
-  problems that have been really hard to finally trace back to less.</p>
-            <a href="/2009/03/less-sudo-and-devnull-permission-denied">(read more)</a>
           </li>
   
       </ul>

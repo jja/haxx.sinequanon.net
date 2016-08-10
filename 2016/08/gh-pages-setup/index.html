@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>haxx qua non - GitHub pages clone setup</title>
+  <meta name="description" content="tips and tricks from a working coder">
+  <link rel="stylesheet" type="text/css" href="/css/site.css" />
+</head>
+<body>
+
+  <header>
+    <h1>
+      <a class="header-span plain" rel="home" href="http://haxx.sinequanon.net/">haxx qua non</a>
+    </h1>
+  </header>
+
+  <article>
+
+      <h1>GitHub pages clone setup</h1>
+
+      <section id="meta">
+
+          <div id="byline">
+            by jja
+            on <time datetime="2016-08-09T22:39:32-0600">2016-08-09</time>
+          </div>
+
+          Topics: <ul id="tags">
+              <li class="tagitem">
+                <a class="tag" href="/tag/git">git</a>
+              </li>
+          </ul>
+
+      </section>
+
+      <section id="post_content">
+
+        <p>I&#39;ve moved this blog (perhaps only temporarily) to a
+<a href="http://metalsmith.io/">Metalsmith</a>
+generated static site served via my
+<a href="https://github.com/jja/haxx.sinequanon.net">GitHub pages repo</a>.
+Here are some notes on how to setup git clones
+with the <code>gh-pages</code> branch in the build directory,
+based upon krlmlr&#39;s answer at
+<a href="http://stackoverflow.com/questions/26120163/how-to-properly-commit-in-repository-with-github-pages-branch/29616287#29616287">stackoverflow</a>.</p>
+<!-- more -->
+<h2 id="initial-setup">Initial setup</h2>
+<p>Clone the site repo:</p>
+<pre><code>$ git clone git@github.com:myuser/myrepo.git
+Cloning into &#39;myrepo&#39;...
+... done.
+$ cd myrepo
+</code></pre><p>Sanity check:</p>
+<pre><code>$ git checkout master
+Already on &#39;master&#39;
+Your branch is up-to-date with &#39;origin/master&#39;.
+</code></pre><p>Setup the build directory to be the <code>gh-pages</code> branch:</p>
+<pre><code>$ rm -rf build
+$ git clone . build
+Cloning into &#39;build&#39;...
+done.
+$ cd build
+$ git checkout --orphan gh-pages
+Switched to a new branch &#39;gh-pages&#39;
+$ git reset --hard
+$ git commit --allow-empty -m &#39;initial build commit&#39;
+[gh-pages (root-commit) 736d806] initial build commit
+</code></pre><p>and add it to the main repo clone:</p>
+<pre><code>$ git push origin -u gh-pages
+Counting objects: 2, done.
+Writing objects: 100% (2/2), 172 bytes | 0 bytes/s, done.
+Total 2 (delta 0), reused 0 (delta 0)
+To /path/to/myrepo/.
+* [new branch]      gh-pages -&gt; gh-pages
+Branch gh-pages set up to track remote branch gh-pages from origin.
+</code></pre><p>The build directory should know only about <code>gh-pages</code>.
+Delete all other branches, especially <code>master</code>:</p>
+<pre><code>$ git branch -d master
+warning: deleting branch &#39;master&#39; that has been merged to
+        &#39;refs/remotes/origin/master&#39;, but not yet merged to HEAD.
+Deleted branch master (was 1d70874).
+$ git remote set-head origin gh-pages
+$ git remote set-branches origin gh-pages
+$ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+[remote &quot;origin&quot;]
+    url = /path/to/myrepo/.
+    fetch = +refs/heads/gh-pages:refs/remotes/origin/gh-pages
+[branch &quot;gh-pages&quot;]
+    remote = origin
+    merge = refs/heads/gh-pages
+</code></pre><p>Add initial site build to <code>gh-pages</code>:</p>
+<pre><code>$ cd ..
+$ make
+$ cd build
+$ git add .
+$ git commit -m &#39;initial site build&#39;
+[gh-pages fd4fc2a] initial site build
+76 files changed, 6727 insertions(+)
+create mode 100644 .nojekyll
+...
+$ git push
+Counting objects: 182, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (105/105), done.
+Writing objects: 100% (182/182), 89.41 KiB | 0 bytes/s, done.
+Total 182 (delta 31), reused 0 (delta 0)
+To /path/to/myrepo/.
+   736d806..fd4fc2a  gh-pages -&gt; gh-pages
+</code></pre><p>Add <code>gh-pages</code> to GitHub:</p>
+<pre><code>$ cd ..     # aka /path/to/myrepo
+$ git push origin -u gh-pages gh-pages
+Counting objects: 184, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (75/75), done.
+Writing objects: 100% (184/184), 89.55 KiB | 0 bytes/s, done.
+Total 184 (delta 31), reused 182 (delta 31)
+To git@github.com:jja/haxx.sinequanon.net.git
+* [new branch]      gh-pages -&gt; gh-pages
+Branch gh-pages set up to track remote branch gh-pages from origin.
+</code></pre><p>Setup both (all) branches to push automatically:</p>
+<pre><code>$ git config push.default matching
+</code></pre><p>Sanity check:</p>
+<pre><code>$ cd /path/to/myrepo
+$ git checkout master
+Already on &#39;master&#39;
+Your branch is up-to-date with &#39;origin/master&#39;.
+$ git branch
+gh-pages
+* master
+$ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+[remote &quot;origin&quot;]
+    url = git@github.com:jja/haxx.sinequanon.net.git
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[branch &quot;master&quot;]
+    remote = origin
+    merge = refs/heads/master
+[branch &quot;gh-pages&quot;]
+    remote = origin
+    merge = refs/heads/gh-pages
+[push]
+    default = matching
+</code></pre><h2 id="future-workflow">Future workflow</h2>
+<p>Committing in the main directory adds site source changes
+to the <code>master</code> branch.
+Committing in the <code>build</code> directory adds the generated
+static site pages to the <code>gh-pages</code> branch
+(from which GitHub will eventually serve the pages).
+Pushing from the <code>build</code> directory syncs the static site
+(<code>gh-pages</code>) with the main repo clone.
+Pushing from the main directory sends it all to GitHub
+for serving (i.e. publishes or installs the site).</p>
+<p>All this can be done in either of two sequences.
+Committing the build (<code>gh-pages</code>) first:</p>
+<pre><code>$ cd /path/to/myrepo
+$ vi ...
+$ make
+$ cd build
+$ git add .
+$ git commit -a
+$ git push
+$ cd ..
+$ git add ...
+$ git commit [-a] [-C `cat .git/refs/heads/gh-pages`]
+$ git push
+</code></pre><p>or committing the source (<code>master</code>) first:</p>
+<pre><code>$ cd /path/to/myrepo
+$ vi ...
+$ make
+$ git add ...
+$ git commit ...
+$ cd build
+$ git add .
+$ git commit -a [-C `cat ../.git/refs/heads/master`]
+$ git push
+$ cd ..
+$ git push
+</code></pre><p>I have some <code>make install</code> targets for both above workflows
+which I&#39;ll commit after some testing.</p>
+<h2 id="coda">Coda</h2>
+<p>I hope that helps.
+I don&#39;t have a commenting service (yet?) for the static site,
+so please email comments or suggestions
+(see the <a href="/about/">About</a> page), or comment in a
+<a href="https://github.com/jja/haxx.sinequanon.net/issues/1">GitHub issue</a>.
+(Hmmm... not a real solution...)</p>
+
+
+      </section>
+
+  </article>
+
+  <div id="comment-form">
+        (comments are closed)
+  </div>
+
+  <section id="nav">
+
+        <a class="footer-span plain" href="/2016/07/updated-eagle-fire-garfield-randomizer">Next: Updated Eagle_Fire Garfield Randomizer</a>
+  </section>
+
+  <footer>
+    <a class="footer-span plain" rel="home" href="http://haxx.sinequanon.net/">Home</a>
+  </footer>
+
+</body>
+</html>

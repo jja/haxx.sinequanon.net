@@ -17,6 +17,16 @@
   <section id="posts">
       <ul id="postlist">
   
+          <li class="postitem"><h2><a href="/2009/03/less-sudo-and-devnull-permission-denied">less, sudo, and /dev/null: Permission denied</a></h2>
+            2009-03-25          <p>Sigh. The ubiquitous utility <strong>less</strong> does a really bad and hard to understand
+  thing. For some time now, it behaves not just as a reader but also a writer:
+  it writes a history file (specified by the environment variable <code>LESSHISTFILE</code>
+  which is <code>$HOME/.lesshst</code> by default). If <strong>you</strong> want less to be <strong>writing</strong>
+  things, fine, but don&#39;t force it on <strong>me</strong>! This has caused some annoying
+  problems that have been really hard to finally trace back to less.</p>
+            <a href="/2009/03/less-sudo-and-devnull-permission-denied">(read more)</a>
+          </li>
+  
           <li class="postitem"><h2><a href="/2008/10/rails-logged-in-user-idiom">Rails logged_in_user idiom</a></h2>
             2008-10-07          <p>I recently refactored another developer&#39;s code to clean up some massive
   amounts of database pings to retrieve the current user object. The main
