@@ -181,7 +181,7 @@ or committing the source (`master`) first:
     $ git commit ...
     $ cd build
     $ git add .
-    $ git commit -a [-C `cat ../.git/refs/heads/master`]
+    $ git commit -a [-m ...]
     $ git push
     $ cd ..
     $ git push
