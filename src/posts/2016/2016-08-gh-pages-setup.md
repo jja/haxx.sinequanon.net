@@ -3,7 +3,7 @@ author: jja
 comments: false
 date: 2016-08-10 04:39:32+00:00
 layout: post
-link: http://haxx.sinequanon.net/2016/2016-08-gh-pages-setup/
+link: http://haxx.sinequanon.net/2016/08/gh-pages-setup/
 slug: gh-pages-setup
 title: GitHub pages clone setup
 tags:
