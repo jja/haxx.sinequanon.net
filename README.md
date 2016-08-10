@@ -3,4 +3,6 @@
 Source for haxx.sinequanon.net website using 
 [metalsmith](http://metalsmith.io/)
 
-See [gh-setup.txt](gh-setup.txt) for notes on git/gh-pages setup.
+See [gh-pages-setup.md](src/posts/2016/2016-08-gh-pages-setup.md)
+[online](http://haxx.sinequanon.net/2016/08/gh-pages-setup/)
+for notes on my git setup for GitHub pages.
