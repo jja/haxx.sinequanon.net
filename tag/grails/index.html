@@ -19,6 +19,20 @@
   <section id="posts">
       <ul id="postlist">
   
+          <li class="postitem"><h2><a href="/2016/09/spring-scheduled">Spring ScheduledExecutors in Grails</a></h2>
+            2016-09-30          <p>Here&#39;s how to setup scheduled (periodic or timed) tasks with Spring3
+  in Grails using the concurrency executors introduced in Java5.
+  This replaces the use of a Spring2 <code>TimerTask</code> which was deprecated in
+  Spring3 and removed from Spring4. Grails2 uses Spring3 so
+  the <code>TimerTask</code> should still work, but this method should work
+  in Grails2 and Grails3. Note that in Grails3 and
+  <a href="https://github.com/grails/grails-core/issues/2216">possibly 2.4/2.5</a>,
+  you might be able to use the much simpler Spring
+  <a href="http://docs.spring.io/spring/docs/3.0.x/spring-framework-reference/html/scheduling.html#scheduling-annotation-support-scheduled"><code>@Scheduled</code></a>
+  annotation on a service method.</p>
+            <a href="/2016/09/spring-scheduled">(read more)</a>
+          </li>
+  
           <li class="postitem"><h2><a href="/2015/12/grails-2-3-11-with-java8">Grails 2.3.11 with Java8</a></h2>
             2015-12-22          <p>Grails 2.3.11 (or any 2.3.x) does not work with Java8 (<code>jdk1.8.0_40</code> or
   later). Following are some notes on how to get things working.</p>
@@ -82,21 +96,6 @@
             2009-06-04          <p>Here are the permissions I&#39;ve used for Grails apps deployed to Tomcat running
   the Java security manager.</p>
             <a href="/2009/06/security-policy">(read more)</a>
-          </li>
-  
-          <li class="postitem"><h2><a href="/2009/03/grails-11-logging">Grails 1.1 logging</a></h2>
-            2009-03-26          <p>Grails 1.1 has changed logging setup completely, introducing a
-  <a href="http://grails.org/doc/1.1/guide/3.%20Configuration.html#3.1.2%20Logging">new DSL closure</a>.
-  For the most part it&#39;s cool, but the syntax looks the same sometimes for both
-  log level and appender assignments. I&#39;ve updated my previous posts on
-  <a href="/2008/09/grails-logging/">debug logging</a>
-  and
-  <a href="/2008/09/grails-stacktracelog/">stacktrace.log</a>.
-  For the record, included below is the complete log4j closure I&#39;m now using for
-  a new Grails 1.1 project (or
-  <a href="/wp-content/uploads/2009/03/log4jdsl.txt">download</a>
-  it). Append this to the default <code>Config.groovy</code> file.</p>
-            <a href="/2009/03/grails-11-logging">(read more)</a>
           </li>
   
       </ul>
