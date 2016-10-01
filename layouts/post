@@ -51,12 +51,12 @@
   </div>
 
   <section id="nav">
-    {{#if previous}}
-        <a class="footer-span plain" href="/{{previous.path}}">Previous: {{previous.title}}</a>
+    {{#if next}}
+        <a class="footer-span plain" href="/{{next.path}}">Previous: {{next.title}}</a>
     {{/if}}
 
-    {{#if next}}
-        <a class="footer-span plain" href="/{{next.path}}">Next: {{next.title}}</a>
+    {{#if previous}}
+        <a class="footer-span plain" href="/{{previous.path}}">Next: {{previous.title}}</a>
     {{/if}}
   </section>
 
