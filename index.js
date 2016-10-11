@@ -1,5 +1,5 @@
 var Metalsmith  = require('metalsmith');
-var markdown    = require('metalsmith-markdown');
+var markdown    = require('metalsmith-markdown-remarkable');
 var layouts     = require('metalsmith-layouts');
 var permalinks  = require('metalsmith-permalinks');
 var serve       = require('metalsmith-serve');
@@ -29,7 +29,10 @@ var ms = Metalsmith(__dirname)
       pattern: 'posts/**/*.md',
     }
   }))
-  .use(markdown())
+  .use(markdown('full',{
+    html: true,
+    linkify: true,
+  }))
   .use(more({
     alwaysAddKey: true,
 	regexp: /\s*<(!--\s*more\s*--|h2\s*id="comments"\s*)>/,
