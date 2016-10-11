@@ -40,12 +40,12 @@
 
         <p>Grails 1.1 has changed logging setup completely, introducing a
 <a href="http://grails.org/doc/1.1/guide/3.%20Configuration.html#3.1.2%20Logging">new DSL closure</a>.
-For the most part it&#39;s cool, but the syntax looks the same sometimes for both
-log level and appender assignments. I&#39;ve updated my previous posts on
+For the most part it's cool, but the syntax looks the same sometimes for both
+log level and appender assignments. I've updated my previous posts on
 <a href="/2008/09/grails-logging/">debug logging</a>
 and
 <a href="/2008/09/grails-stacktracelog/">stacktrace.log</a>.
-For the record, included below is the complete log4j closure I&#39;m now using for
+For the record, included below is the complete log4j closure I'm now using for
 a new Grails 1.1 project (or
 <a href="/wp-content/uploads/2009/03/log4jdsl.txt">download</a>
 it). Append this to the default <code>Config.groovy</code> file.</p>
@@ -53,65 +53,69 @@ it). Append this to the default <code>Config.groovy</code> file.</p>
 <pre><code>environments {
     development {
         log4j = {
-            // in development mode, let&#39;s see all my log messages
-            debug &#39;grails.app&#39;
+            // in development mode, let's see all my log messages
+            debug 'grails.app'
         }
     }
     production {
-        def catalinaBase = System.properties.getProperty(&#39;catalina.base&#39;)
-        if (!catalinaBase) catalinaBase = &#39;.&#39;   // just in case
+        def catalinaBase = System.properties.getProperty('catalina.base')
+        if (!catalinaBase) catalinaBase = '.'   // just in case
         def logDirectory = &quot;${catalinaBase}/logs&quot;
         log4j = {
             appenders {
                 // set up a log file in the standard tomcat area; be sure to use .toString() with ${}
-                rollingFile name:&#39;tomcatLog&#39;, file:&quot;${logDirectory}/${appName}.log&quot;.toString(), maxFileSize:&#39;100KB&#39;
-                &#39;null&#39; name:&#39;stacktrace&#39;
+                rollingFile name:'tomcatLog', file:&quot;${logDirectory}/${appName}.log&quot;.toString(), maxFileSize:'100KB'
+                'null' name:'stacktrace'
             }
             root {
                 // change the root logger to my tomcatLog file
-                error &#39;tomcatLog&#39;
+                error 'tomcatLog'
                 additivity = true
             }
             // example for sending stacktraces to my tomcatLog file
-            //error tomcatLog:&#39;StackTrace&#39;
+            //error tomcatLog:'StackTrace'
             // set level for my messages; this uses the root logger (and thus the tomcatLog file)
-            info &#39;grails.app&#39;
+            info 'grails.app'
         }
     }
 }
-</code></pre><p>The newest bit here is setting the log file to Tomcat&#39;s log directory for
+</code></pre>
+<p>The newest bit here is setting the log file to Tomcat's log directory for
 production. Without that, Grails/Log4J will try to open files in the place
-where tomcat starts up (e.g. / or someplace you probably can&#39;t write files).
+where tomcat starts up (e.g. / or someplace you probably can't write files).
 Also, the arguments to appenders (and layouts) are sent directly to Apache
 BeanUtils so must be Java Strings -- use .toString() on your GStrings (a
 string with variable interpolation).</p>
-<p>(I&#39;ve also updated several of my other
+<p>(I've also updated several of my other
 <a href="/tag/grails/">Grails</a>
 posts for 1.0.4 and 1.1.)</p>
 <p>Edit: fixed a syntax error that crept in between testing and posting.</p>
-<p>Edit: for Grails 2.x, you can&#39;t reference variables more than one level
+<p>Edit: for Grails 2.x, you can't reference variables more than one level
 &quot;above&quot; the appender. It produces several copies of the error:</p>
 <pre><code>Error log4j:ERROR Property missing when configuring log4j: appName
-</code></pre><p>Actually, the log file still works, but to get rid of the error, add a new var
+</code></pre>
+<p>Actually, the log file still works, but to get rid of the error, add a new var
 after <code>logDirectory</code> :</p>
 <pre><code>def tomcatLogFilename = &quot;${logDirectory}/${appName}/${appName}.log&quot;.toString()
-</code></pre><p>then replace <code>rollingFile</code> with something like:</p>
-<pre><code>rollingFile name:&#39;tomcatLog&#39;, file:&quot;${tomcatLogFilename}&quot;.toString(), maxFileSize:&#39;1MB&#39;, maxBackupIndex:10
-</code></pre><h2 id="comments">Comments</h2>
+</code></pre>
+<p>then replace <code>rollingFile</code> with something like:</p>
+<pre><code>rollingFile name:'tomcatLog', file:&quot;${tomcatLogFilename}&quot;.toString(), maxFileSize:'1MB', maxBackupIndex:10
+</code></pre>
+<h2>Comments</h2>
 <p>chris commented at 2009-07-13 04:38:02</p>
 <p>Hi,</p>
 <p>I have tried exactly the same thing but it does not work. When I deploy on tomcat. tomcat says all is fine etc but I cannot find any logs. Also when I try to access my app through tomcat I get a 404 error.</p>
 <hr>
 <p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2009-07-13 16:01:29</p>
-<p>The 404 error is suspicious - perhaps that&#39;s not a logging issue, but your basic installation is not working at all. Is it <em>really</em> deployed properly in Tomcat? Are you running the manager webapp and does it show your app as running? Is it an issue with communication between Apache httpd (webserver) and Tomcat? And the first question really is: does your app work in grails dev mode? i.e. running from the command line like &quot;grails run-app&quot;</p>
+<p>The 404 error is suspicious - perhaps that's not a logging issue, but your basic installation is not working at all. Is it <em>really</em> deployed properly in Tomcat? Are you running the manager webapp and does it show your app as running? Is it an issue with communication between Apache httpd (webserver) and Tomcat? And the first question really is: does your app work in grails dev mode? i.e. running from the command line like &quot;grails run-app&quot;</p>
 <hr>
 <p>Pieter commented at 2009-07-22 07:35:33</p>
 <p>Thanks, this helped me get my logs in Tomcat!</p>
 <hr>
 <p>Justin commented at 2009-08-31 12:22:42</p>
 <p>Thanks so much for this.</p>
-<p>The &#39;log4jdsl.txt&#39; got my logging up and running and then I was able to fix my problem in no time.</p>
-<p>Not sure why they like to keep us guessing in the dark for hours on end though. It&#39;s not exactly how I planned to spend my bank holiday!</p>
+<p>The 'log4jdsl.txt' got my logging up and running and then I was able to fix my problem in no time.</p>
+<p>Not sure why they like to keep us guessing in the dark for hours on end though. It's not exactly how I planned to spend my bank holiday!</p>
 <hr>
 <p><a href="http://www.bruchmann.it">Conrad Bruchmann</a> commented at 2009-11-10 03:46:11</p>
 <p>Thank you very much. I had a lot of issues with log4j before. With your description everything runs fine!</p>
@@ -125,7 +129,7 @@ Conrad</p>
 <p>Is there a way to set the catalina.base automatically?  I get null when i do getProperty.  I know I can set it in a shell window with export.  Is there another alternative location to place the log files?</p>
 <hr>
 <p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2010-04-26 14:39:56</p>
-<p>@Edwardo: catalina.base is originally set in the Tomcat startup script catalina.sh or catalina.bat via a -D argument to the java executable. Sorry for the delay in replying.</p>
+<p>@Edwardo: catalina.base is originally set in the Tomcat startup script <a href="http://catalina.sh">catalina.sh</a> or catalina.bat via a -D argument to the java executable. Sorry for the delay in replying.</p>
 
 
       </section>

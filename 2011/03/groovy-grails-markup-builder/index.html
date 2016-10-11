@@ -39,11 +39,12 @@
       <section id="post_content">
 
         <p>I was trying to use the Groovy XML MarkupBuilder to have Grails output an HTML
-fragment for an AJAX call and just couldn&#39;t get it to work. I wanted to
+fragment for an AJAX call and just couldn't get it to work. I wanted to
 generate an HTML select/option menu from a list of lists:</p>
 <!-- more -->
-<pre><code>assert results == [[null,null], [17, &#39;foo&#39;], [42, &#39;bar&#39;], [69, &#39;bahz&#39;]]
-</code></pre><p>(That list was returned from a Hibernate Criteria Builder with some
+<pre><code>assert results == [[null,null], [17, 'foo'], [42, 'bar'], [69, 'bahz']]
+</code></pre>
+<p>(That list was returned from a Hibernate Criteria Builder with some
 specialized projections.)</p>
 <p>First I tried to do it simply, following Grails docs:</p>
 <!-- more -->
@@ -55,31 +56,38 @@ specialized projections.)</p>
       }
     }
   }
-</code></pre><p>I kept getting a blank list. Eventually I figured out that the Grails GSP
+</code></pre>
+<p>I kept getting a blank list. Eventually I figured out that the Grails GSP
 select tag was interfering with the markup builder DSL, so I tried using that,
 with list access code in a closure in a GString expression:</p>
 <pre><code>render {
   g.select from:results, optionKey:&quot;${{it[0]}}&quot;, optionValue:&quot;${{it[1]}}&quot;
   }
-</code></pre><p>Except that both expressions are in the same block and share <code>it</code>. So we have
+</code></pre>
+<p>Except that both expressions are in the same block and share <code>it</code>. So we have
 to use different explicit closure parameters:</p>
 <pre><code>render {
   g.select from:results, optionKey:&quot;${{itk -&gt; itk[0]}}&quot;, optionValue:&quot;${{itv-&gt;itv[1]}}&quot;
   }
-</code></pre><p>but that fails with an error like:</p>
+</code></pre>
+<p>but that fails with an error like:</p>
 <pre><code>`No signature of method: java.io.StringWriter.getAt() is applicable for
 argument types: (java.lang.Integer) values: [0] Possible solutions:
 getAt(java.lang.String)`
-</code></pre><p>so I tried making the indices into strings:</p>
+</code></pre>
+<p>so I tried making the indices into strings:</p>
 <pre><code>render {
-  g.select from:results, optionKey:&quot;${{itk -&gt; itk[&#39;0&#39;]}}&quot;, optionValue:&quot;${{itv-&gt;itv[&#39;1&#39;]}}&quot;
+  g.select from:results, optionKey:&quot;${{itk -&gt; itk['0']}}&quot;, optionValue:&quot;${{itv-&gt;itv['1']}}&quot;
   }
-</code></pre><p>which resulted in the error:</p>
+</code></pre>
+<p>which resulted in the error:</p>
 <pre><code>No such property: 0 for class: java.io.StringWriter
-</code></pre><p>The Grails docs give the example</p>
+</code></pre>
+<p>The Grails docs give the example</p>
 <pre><code>optionValue=&quot;${{it.title?.toUpperCase()}}&quot;
-</code></pre><p>which makes it seem like real code is available. But the <code>itk</code>/<code>itv</code> closure
-parameters apparently aren&#39;t <em>really</em> the list values, which would happily
+</code></pre>
+<p>which makes it seem like real code is available. But the <code>itk</code>/<code>itv</code> closure
+parameters apparently aren't <em>really</em> the list values, which would happily
 accept the Groovy magic <code>Object.getAt()</code> method.
 Something like this seemed to work:</p>
 <pre><code>render { builder -&gt;
@@ -90,7 +98,8 @@ Something like this seemed to work:</p>
     }
   }
 }
-</code></pre><p>If you&#39;re in Grails (and not just straight Groovy), really try to use a view
+</code></pre>
+<p>If you're in Grails (and not just straight Groovy), really try to use a view
 for this!</p>
 
 

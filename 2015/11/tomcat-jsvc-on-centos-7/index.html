@@ -39,8 +39,8 @@
       <section id="post_content">
 
         <p>The default yum packages for tomcat and tomcat-jsvc (version <code>7.0.54-2.el7_1</code>)
-are broken on CentOS 7 (we&#39;re currently on <code>7.1.1503</code>). Newer packages available
-from Fedora don&#39;t help. Here&#39;s how to make things work.</p>
+are broken on CentOS 7 (we're currently on <code>7.1.1503</code>). Newer packages available
+from Fedora don't help. Here's how to make things work.</p>
 <!-- more -->
 <p><a href="https://commons.apache.org/proper/commons-daemon/jsvc.html">Jsvc</a>
 is part of
@@ -51,7 +51,7 @@ downgrade capabilities to a non-privileged user (like &quot;tomcat&quot;). Unfor
 the systemd setup is broken
 (<a href="https://bugs.centos.org/view.php?id=9097">see bug 9097</a>).
 The tomcat package scripts
-contain jsvc provisions, but just plain don&#39;t work.</p>
+contain jsvc provisions, but just plain don't work.</p>
 <p>Start by replacing file <code>/usr/lib/systemd/system/tomcat-jsvc.service</code>:</p>
 <pre><code># Systemd unit file for tomcat
 #
@@ -75,13 +75,14 @@ ExecStop=/usr/libexec/tomcat/server stop
 
 [Install]
 WantedBy=multi-user.target
-</code></pre><p>and file <code>/usr/libexec/tomcat/functions</code>:</p>
+</code></pre>
+<p>and file <code>/usr/libexec/tomcat/functions</code>:</p>
 <pre><code>#!/bin/bash
 
 if [ -r /usr/share/java-utils/java-functions ]; then
   . /usr/share/java-utils/java-functions
 else
-  echo &quot;Can&#39;t read Java functions library, aborting&quot;
+  echo &quot;Can't read Java functions library, aborting&quot;
   exit 1
 fi
 
@@ -103,7 +104,7 @@ run_jsvc() {
     if [ &quot;$UID&quot; = &quot;0&quot; ]; then
       /usr/bin/chown ${TOMCAT_USER} ${OUTFILE}
 
-      # guess that there&#39;s a group of the same name, but ignore errors
+      # guess that there's a group of the same name, but ignore errors
       /usr/bin/chgrp ${TOMCAT_USER} ${OUTFILE} &gt;/dev/null 2&gt;&amp;1 || true
     fi
 
@@ -114,7 +115,7 @@ run_jsvc() {
 
     exec &quot;${JSVC}&quot; ${JSVC_OPTS} ${FLAGS} -classpath &quot;${CLASSPATH}&quot; ${OPTIONS} &quot;${MAIN_CLASS}&quot; &quot;${@}&quot;
   else
-    echo &quot;Can&#39;t find ${JSVC} executable&quot;
+    echo &quot;Can't find ${JSVC} executable&quot;
   fi
 }
 
@@ -127,8 +128,9 @@ run() {
     run_java $@
    fi
 }
-</code></pre><p>In addition, the base tomcat package is missing the library JAR file
-<code>tomcat-dbcp.jar</code>. You&#39;ll have to pull that out of a
+</code></pre>
+<p>In addition, the base tomcat package is missing the library JAR file
+<code>tomcat-dbcp.jar</code>. You'll have to pull that out of a
 <a href="http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.54/bin/">matching version</a>
 of the
 <a href="http://archive.apache.org/dist/tomcat/tomcat-7/">binary distribution</a>
@@ -136,14 +138,16 @@ of Tomcat. Place the file <code>tomcat-dbcp.jar</code> into directory <code>/usr
 <p>You should also:</p>
 <ol>
 <li>pre-create (touch) the process ID file <code>/run/jsvc-tomcat.pid</code> as user <code>tomcat:tomcat</code> with permissions <code>0644</code></li>
-<li><p>mask (hide) the standard tomcat service:</p>
-<p>sudo systemctl stop tomcat.service
-sudo systemctl mask tomcat.service</p>
-</li>
-<li><p>reload systemd config to see the new setup:</p>
-<p>sudo systemctl daemon-reload</p>
-</li>
+<li>mask (hide) the standard tomcat service:</li>
 </ol>
+<pre><code>sudo systemctl stop tomcat.service
+sudo systemctl mask tomcat.service
+</code></pre>
+<ol>
+<li>reload systemd config to see the new setup:</li>
+</ol>
+<pre><code>sudo systemctl daemon-reload
+</code></pre>
 <p>You probably also want to edit <strong><code>/etc/logrotate.d/tomcat</code></strong>:</p>
 <pre><code>/var/log/tomcat/catalina.out {
     weekly
@@ -155,11 +159,13 @@ sudo systemctl mask tomcat.service</p>
         /usr/bin/kill -USR1 `/usr/bin/cat /var/run/jsvc-tomcat.pid`
     endscript
 }
-</code></pre><p>Now you will use systemd to control tomcat:</p>
+</code></pre>
+<p>Now you will use systemd to control tomcat:</p>
 <pre><code>sudo systemctl enable tomcat-jsvc
 sudo systemctl start tomcat-jsvc
 sudo systemctl stop tomcat-jsvc
 </code></pre>
+
 
       </section>
 

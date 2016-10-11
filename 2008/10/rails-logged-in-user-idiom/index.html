@@ -35,7 +35,7 @@
 
       <section id="post_content">
 
-        <p>I recently refactored another developer&#39;s code to clean up some massive
+        <p>I recently refactored another developer's code to clean up some massive
 amounts of database pings to retrieve the current user object. The main
 problem was in the use of the logged_in_user or current_user idiom in Rails.
 <a href="http://books.google.com/books?id=2NZG4ASmnZ0C&amp;pg=PA54&amp;lpg=PA54&amp;dq=rails+logged_in_user&amp;source=web&amp;ots=x7Hqg6pZw7&amp;sig=N2itAovNoEyoIwzDO42GmeRLco0&amp;hl=en&amp;sa=X&amp;oi=book_result&amp;resnum=7&amp;ct=result">Several</a>
@@ -45,13 +45,14 @@ problem was in the use of the logged_in_user or current_user idiom in Rails.
 <a href="http://snippets.dzone.com/posts/show/4922">examples</a>
 but leave out the details that were bugging my project.</p>
 <!-- more -->
-<h2 id="user-id">user.id</h2>
-<p>Firstly, don&#39;t store the
+<h2>user.id</h2>
+<p>Firstly, don't store the
 <a href="http://www.freezzo.com/2008/08/22/session-current-user-object-bad/">user object</a>
-in the session! Just store the user object&#39;s ID. In <code>LoginController#login</code>, use:</p>
+in the session! Just store the user object's ID. In <code>LoginController#login</code>, use:</p>
 <pre><code>        session[:user_id] = user.id
-</code></pre><p>(full method below).</p>
-<h2 id="caching-helper_method">caching helper_method</h2>
+</code></pre>
+<p>(full method below).</p>
+<h2>caching helper_method</h2>
 <p>Rather than a before filter on ApplicationController, I used a helper method
 logged_in_user:</p>
 <pre><code>class ApplicationController &lt; ActionController::Base
@@ -66,7 +67,8 @@ logged_in_user:</p>
   end
 #...
 end
-</code></pre><p>The method returns the
+</code></pre>
+<p>The method returns the
 <a href="http://railstips.org/2006/11/18/class-and-instance-variables-in-ruby">instance variable</a>
 of the same name (<code>@logged_in_user</code>). If the variable is not already set, only
 then does the method use find_by_id to load the object from the database
@@ -77,9 +79,11 @@ ApplicationController, i.e. it exists for the duration of the web request.
 Thus it acts as a cache during the request. We can then call logged_in_user
 from our views without repeatedly accessing the database:</p>
 <pre><code>&lt;% if logged_in_user %&gt;
-</code></pre><p>and we can access any User methods like this:</p>
+</code></pre>
+<p>and we can access any User methods like this:</p>
 <pre><code>&lt;% if logged_in_user and logged_in_user.may_view_all? %&gt;
-</code></pre><h2 id="security">security</h2>
+</code></pre>
+<h2>security</h2>
 <p>For security, be sure your LoginController resets both the user ID in the
 session and the logged_in_user instance variable:</p>
 <pre><code>class LoginController &lt; ApplicationController
@@ -106,7 +110,8 @@ session and the logged_in_user instance variable:</p>
     redirect_to(:action =&gt; &quot;login&quot;)
   end
 end
-</code></pre><h2 id="alternatives">alternatives</h2>
+</code></pre>
+<h2>alternatives</h2>
 <p>Here are two other ways of writing logged_in_user that show the logic a little
 more clearly, if more verbose:</p>
 <pre><code>def logged_in_user
@@ -123,11 +128,12 @@ def logged_in_user
     end
     @logged_in_user
 end
-</code></pre><h2 id="applicationhelper">ApplicationHelper</h2>
-<p>Final tip: make sure you don&#39;t put a logged_in_user helper method on
-ApplicationHelper--- that&#39;s how our app was pinging the database for the user
+</code></pre>
+<h2>ApplicationHelper</h2>
+<p>Final tip: make sure you don't put a logged_in_user helper method on
+ApplicationHelper--- that's how our app was pinging the database for the user
 object tens of times per page view as this method was getting used instead of
-ApplicationController&#39;s!</p>
+ApplicationController's!</p>
 
 
       </section>

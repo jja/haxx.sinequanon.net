@@ -45,12 +45,12 @@
 thing. For some time now, it behaves not just as a reader but also a writer:
 it writes a history file (specified by the environment variable <code>LESSHISTFILE</code>
 which is <code>$HOME/.lesshst</code> by default). If <strong>you</strong> want less to be <strong>writing</strong>
-things, fine, but don&#39;t force it on <strong>me</strong>! This has caused some annoying
+things, fine, but don't force it on <strong>me</strong>! This has caused some annoying
 problems that have been really hard to finally trace back to less.</p>
 <!-- more -->
 <p>To turn off this behavior, set the variable <code>LESSHISTFILE</code> (either in the
-environment or in your lesskey file) to <code>&#39;-&#39;</code>. The docs say you can use
-<code>&#39;/dev/null&#39;</code> too, but don&#39;t-- I&#39;ll explain below. Besides writing a file,
+environment or in your lesskey file) to <code>'-'</code>. The docs say you can use
+<code>'/dev/null'</code> too, but don't-- I'll explain below. Besides writing a file,
 less goes a step further and does a chmod on that file to <code>0600</code>, which is
 actually a reasonable permission set to keep others from seeing your history.
 The problem is that <code>sudo</code> picks up the <code>HOME</code> variable but not
@@ -60,31 +60,33 @@ directory.</p>
 then when less does the chmod during sudo, it changes the permissions of
 /dev/null (which is why LESSHISTFILE set to /dev/null is bad-- less is
 supposed to ignore it in that case but still somehow chmods /dev/null). So I
-couldn&#39;t use /dev/null anymore (and quite a few scripts do so, it&#39;s a standard
+couldn't use /dev/null anymore (and quite a few scripts do so, it's a standard
 practice), getting messages like <code>/dev/null: Permission denied</code>.</p>
-<p>The workaround to this <del>bug</del> &#39;feature&#39; of less is to set the
+<p>The workaround to this <del>bug</del> 'feature' of less is to set the
 <code>LESSHISTFILE</code> variable in the <code>LESSKEY</code> file (<code>$HOME/.less</code>):</p>
 <pre><code>% lesskey -
 #env
 LESSHISTFILE = -
 ^D
-</code></pre><p>then sudo will pick up <code>$HOME</code>, less will then read <code>LESSHISTFILE</code> from
-<code>$HOME/.less</code> and not create the stoopid <code>.lesshst</code>, so I don&#39;t need the symlink
+</code></pre>
+<p>then sudo will pick up <code>$HOME</code>, less will then read <code>LESSHISTFILE</code> from
+<code>$HOME/.less</code> and not create the stoopid <code>.lesshst</code>, so I don't need the symlink
 to <code>/dev/null</code> anymore.</p>
 <p>There are other reports of changing permissions on <code>/dev/null</code> that are
 generally unexplained. Try to stay away from symlinks to <code>/dev/null</code> in your
 home directory, especially any that might get chmod applied by a program you
 run via sudo. (I still have <code>.evolution</code> and <code>.recently-used</code> symlinked to
-<code>/dev/null</code>. I don&#39;t think I sudo anything using those...)</p>
-<h2 id="comments">Comments</h2>
+<code>/dev/null</code>. I don't think I sudo anything using those...)</p>
+<h2>Comments</h2>
 <p>Jesper commented at 2011-06-01 07:22:06</p>
-<p>Interesting, thanks for the analysis. I just stumbled on this problem myself. </p>
+<p>Interesting, thanks for the analysis. I just stumbled on this problem myself.</p>
 <p>Scenario:</p>
 <pre><code>$ export LESSHISTFILE=/dev/null
 $ sudo -s
 # history|less (or any other invocation of less I guess)
 *poof* /dev/null is 700, thus unusable for non-root users.
-</code></pre><p>I guess the sudo -s carried over the LESSHISTFILE variable to the privileged shell, and less got a bit too eager about permissions on what it believed to be its history file.</p>
+</code></pre>
+<p>I guess the sudo -s carried over the LESSHISTFILE variable to the privileged shell, and less got a bit too eager about permissions on what it believed to be its history file.</p>
 
 
       </section>

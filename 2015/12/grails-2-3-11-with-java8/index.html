@@ -61,12 +61,14 @@ No fix is available until Grails 2.4.5 or even 2.5.1.</p>
 <p>Remove the old jars and .pom files and place the new files in their
 corresponding places under (as always, be careful of cut-n-paste linebreaks):</p>
 <pre><code>$GRAILS_HOME/lib/org.springframework/springloaded/
-</code></pre><p>Rename and edit <code>ivy-1.2.0.RELEASE.xml</code> to reflect the new version number.
-Unfortunately, that&#39;s not enough because something still wants the 1.2.0 jar.
+</code></pre>
+<p>Rename and edit <code>ivy-1.2.0.RELEASE.xml</code> to reflect the new version number.
+Unfortunately, that's not enough because something still wants the 1.2.0 jar.
 So symlink that name:</p>
 <pre><code>cd $GRAILS_HOME/lib/org.springframework/springloaded/jars
 ln -s springloaded-1.2.4.RELEASE.jar springloaded-1.2.0.RELEASE.jar
-</code></pre><p>You must also update a major security hole in Commons Collections, which is
+</code></pre>
+<p>You must also update a major security hole in Commons Collections, which is
 not fixed in Grails 2.3.x. Download the jar for version 3.2.2 (or higher) from
 one of:</p>
 <ul>
@@ -75,7 +77,8 @@ one of:</p>
 </ul>
 <p>Install under:</p>
 <pre><code>$GRAILS_HOME/lib/commons-collections/commons-collections/
-</code></pre><p>Rename and edit <code>ivy-3.2.1.xml</code> to reflect the new version number.</p>
+</code></pre>
+<p>Rename and edit <code>ivy-3.2.1.xml</code> to reflect the new version number.</p>
 
 
       </section>

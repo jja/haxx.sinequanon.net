@@ -44,7 +44,7 @@
         <p>The <a href="http://grails.org/">Grails</a> <a href="http://grails.org/doc/1.0.x/">docs</a>
 talk about testing and have some example test methods but fail to describe some
 simple but necessary mechanics to get it going. The test methods should be in
-a class that extends <code>GroovyTestCase</code> (that word doesn&#39;t appear at all when
+a class that extends <code>GroovyTestCase</code> (that word doesn't appear at all when
 searching the Grails website). The class name must end with <code>Tests</code> since it
 must be in a file with a name ending in <code>Tests.groovy</code> under the <code>test</code>
 directory of your grails project.</p>
@@ -56,8 +56,9 @@ class FooTests extends GroovyTestCase {
         assertTrue(1==1);
     }
 }
-</code></pre><p><a href="http://groovy.codehaus.org/Unit+Testing">GroovyTestCase</a>
-is described some by the Groovy docs; it extends Junit&#39;s <code>TestCase</code>.
+</code></pre>
+<p><a href="http://groovy.codehaus.org/Unit+Testing">GroovyTestCase</a>
+is described some by the Groovy docs; it extends Junit's <code>TestCase</code>.
 Note that Grails 1.0.3 includes the Junit 3.8.2 JAR file. To get docs, go to the
 <a href="http://junit.org/">Junit website</a> then to <code>JUnit Releases</code> and download and unpack
 <a href="http://downloads.sourceforge.net/junit/junit3.8.1.zip">version 3.8.1</a>
@@ -71,7 +72,8 @@ public class BarTests extends TestCase {
         assertTrue(2==2);
     }
 }
-</code></pre><p>Then from the top of your Grails project, just run <code>grails test-app</code></p>
+</code></pre>
+<p>Then from the top of your Grails project, just run <code>grails test-app</code></p>
 <pre><code>% grails test-app
 ...
 -------------------------------------------------------
@@ -83,7 +85,8 @@ Running test BarTests...
 Unit Tests Completed in 155ms ...
 -------------------------------------------------------
 ...
-</code></pre><p>with more output in the <code>test/report/</code> directory.</p>
+</code></pre>
+<p>with more output in the <code>test/report/</code> directory.</p>
 <p>btw, you can change the filename pattern with the config option
 <code>grails.testing.patterns</code> (undocumented but mentioned on the
 <a href="http://www.nabble.com/Re%3A-%27test-java%27-and-%27test-groovy%27-directories-p14857388.html">mailing list</a>).</p>

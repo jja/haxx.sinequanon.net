@@ -49,7 +49,8 @@ and the one you get may not match the documentation.</p>
 WARNING: Connector [org.apache.catalina.connector.Connector@11e1e67] does not
 support external executors. Method setExecutor(java.util.concurrent.Executor)
 not found.
-</code></pre><p>I found nothing useful on the web about this or in Tomcat&#39;s bugzilla. I
+</code></pre>
+<p>I found nothing useful on the web about this or in Tomcat's bugzilla. I
 submitted a report
 (<a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=46923">Bug 46923</a>)
 based on what I describe below. It is supposed to be fixed in 6.0.20 (and is in the
@@ -66,27 +67,29 @@ available:</p>
 <p>The default
 <code>[Connector](http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/catalina/connector/Connector.html)</code>
 class, uses the <code>protocol</code> property to pick which class to use (for this
-example, that&#39;s <code>AJP/1.3</code>), but the key is that it also checks if
-<a href="http://tomcat.apache.org/tomcat-6.0-doc/apr.html">APR</a> is initialized. I&#39;ve
+example, that's <code>AJP/1.3</code>), but the key is that it also checks if
+<a href="http://tomcat.apache.org/tomcat-6.0-doc/apr.html">APR</a> is initialized. I've
 never gotten APR working on my Redhat boxen and so got the exception above. If
 APR is not initialized, JkCoyoteHandler is the protocol class used, which does
 not implement most of the features listed in the documentation that are
-implemented by AjpAprProtocol and AjpProtocol. I don&#39;t know why AjpProtocol
-isn&#39;t used. It seems to work fine. The two classes are virtually identical
+implemented by AjpAprProtocol and AjpProtocol. I don't know why AjpProtocol
+isn't used. It seems to work fine. The two classes are virtually identical
 (and could be refactored), relying on
 <code>[AjpAprProcessor](http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/coyote/ajp/AjpAprProcessor.html)</code>
 or
 <code>[AjpProcessor](http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/coyote/ajp/AjpProcessor.html)</code>
-to do the heavy lifting, which isn&#39;t marked experimental or anything.</p>
+to do the heavy lifting, which isn't marked experimental or anything.</p>
 <p>To use AjpProtocol, specify the full class name for the protocol:</p>
 <pre><code>&lt;Connector port=&quot;8009&quot;
     protocol=&quot;org.apache.coyote.ajp.AjpProtocol&quot; executor=&quot;tomcatThreadPool&quot; ...
-</code></pre><p>To figure out if your APR is working, check your Tomcat logs (e.g.
+</code></pre>
+<p>To figure out if your APR is working, check your Tomcat logs (e.g.
 <code>catalina.err</code>, <code>catalina.DATE.log</code>) for something like:</p>
 <pre><code>INFO: The APR based Apache Tomcat Native library which allows optimal
 performance in production environments was not found on the
 java.library.path:...
-</code></pre><p>BTW, for HTTP/1.1 you get one of these, depending on APR:</p>
+</code></pre>
+<p>BTW, for HTTP/1.1 you get one of these, depending on APR:</p>
 <ul>
 <li><code>[org.apache.coyote.http11.Http11AprProtocol](http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/coyote/http11/Http11AprProtocol.html)</code></li>
 <li><code>[org.apache.coyote.http11.Http11Protocol](http://tomcat.apache.org/tomcat-6.0-doc/api/org/apache/coyote/http11/Http11Protocol.html)</code>
@@ -95,9 +98,9 @@ You can also specify
 All these seem to be decently
 <a href="http://tomcat.apache.org/tomcat-6.0-doc/config/http.html">documented</a>.</li>
 </ul>
-<h2 id="comments">Comments</h2>
+<h2>Comments</h2>
 <p><a href="http://sosiouxme.wordpress.com/2010/08/13/clustering-tomcat/">Clustering Tomcat « Teh Tech Blogz0r by Luke Meyer</a> commented at 2010-08-13 21:01:02</p>
-<p>[...] really know why the APR isn&#39;t working properly, but a little searching turned up some obscure facts: if the APR isn&#39;t loaded, then for the AJP connector Tomcat makes a default choice of [...]</p>
+<p>[...] really know why the APR isn't working properly, but a little searching turned up some obscure facts: if the APR isn't loaded, then for the AJP connector Tomcat makes a default choice of [...]</p>
 
 
       </section>

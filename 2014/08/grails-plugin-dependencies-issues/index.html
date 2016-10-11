@@ -38,7 +38,7 @@
 
       <section id="post_content">
 
-        <p>We&#39;ve been banging our heads over some quirks and inconsistencies that we
+        <p>We've been banging our heads over some quirks and inconsistencies that we
 eventually traced to plugin dependency naming in Grails 2.3.x. My main Grails
 app gets its domain classes from a local plugin. That plugin needs the
 Hibernate and JodaTime plugins. Spelling the plugin names can be confusing and
@@ -47,52 +47,57 @@ caused problems with run-app and run-script.</p>
 <p>My plugin, called MyDomains, must reference both Hibernate and JodaTime in its
 <code>BuildConfig.groovy</code> and spell them with dashes:</p>
 <pre><code>dependencies {
-  compile &#39;org.grails.plugins:hibernate4:4.3.5.4&#39;
-  compile &#39;org.joda:joda-time:2.3&#39;
+  compile 'org.grails.plugins:hibernate4:4.3.5.4'
+  compile 'org.joda:joda-time:2.3'
   }
-</code></pre><p>To be complete and helpful for my main app, I added <code>dependsOn</code> requirements
-to my plugin, and that&#39;s where I ran into problems. Following BuildConfig, I
+</code></pre>
+<p>To be complete and helpful for my main app, I added <code>dependsOn</code> requirements
+to my plugin, and that's where I ran into problems. Following BuildConfig, I
 spelled JodaTime with dashes, which turned out poorly:</p>
 <pre><code>def dependsOn = [
-  hibernate4: &#39;4.3.5.4 &gt; *&#39;,
+  hibernate4: '4.3.5.4 &gt; *',
   // dash-spelled names are WRONG here!
-  &#39;joda-time&#39;: &#39;1.5&#39;,
+  'joda-time': '1.5',
   ]
-</code></pre><p>Things seemed to work, sometimes. In particular, <code>grails run-app</code> usually
+</code></pre>
+<p>Things seemed to work, sometimes. In particular, <code>grails run-app</code> usually
 worked, although sometimes it required an explict <code>grails compile</code> beforehand.
 <code>grails run-script</code> would only work immediately after a run-app. Often,
-however run-script wouldn&#39;t work at all, failing even though the error message
+however run-script wouldn't work at all, failing even though the error message
 seemed to indicate success!</p>
 <pre><code>| Error Error: The following plugins failed to load due to missing dependencies: [myDomains]
 - Plugin: myDomains
    - Dependencies:
        - hibernate4 (Required: 4.3.5.4 &gt; *, Found: 4.3.5.4)
        - joda-time (Required: 1.5, Found: 1.5)
-</code></pre><p>Note that Grails claims to have found exactly the versions that are required,
+</code></pre>
+<p>Note that Grails claims to have found exactly the versions that are required,
 but claims there are missing dependencies.</p>
 <p><a href="http://grails.1312388.n4.nabble.com/The-following-plugins-failed-to-load-due-to-missing-dependencies-but-the-dependency-is-loaded-td3383081.html">It turns out</a>
 that with <code>dependsOn</code>, we have to spell with first-letter-lowercased camelCase:</p>
 <pre><code>def dependsOn = [
-  hibernate4: &#39;4.3.5.4 &gt; *&#39;,
-  jodaTime: &#39;1.5&#39;,
+  hibernate4: '4.3.5.4 &gt; *',
+  jodaTime: '1.5',
   ]
-</code></pre><p>The plugin class name is <code>JodaTimeGrailsPlugin</code> so (fully-capitalized)
+</code></pre>
+<p>The plugin class name is <code>JodaTimeGrailsPlugin</code> so (fully-capitalized)
 CamelCase would make sense, but Grails has a tendency to lowercase the first
-letter. What&#39;s really annoying is the difference in <code>BuildConfig</code>.</p>
-<h2 id="it-gets-deeper">It gets deeper</h2>
+letter. What's really annoying is the difference in <code>BuildConfig</code>.</p>
+<h2>It gets deeper</h2>
 <p>Despite an
 <a href="http://stackoverflow.com/questions/12317370/dependencies-of-grails-plugins">admonition to not use dependsOn</a>,
 I seem to need it to get my main app properly installing everything. This is
 complicated in that my plugin has a third plugin dependency not shown here,
-which I&#39;ll call &quot;subThree&quot;. subThree is local and not published; I reference
+which I'll call &quot;subThree&quot;. subThree is local and not published; I reference
 it in BuildConfig via (note the dashes):</p>
-<pre><code>grails.plugin.location.&#39;sub-three&#39;=&#39;../grails-sub-three-plugin&#39;
-</code></pre><p>That means I
+<pre><code>grails.plugin.location.'sub-three'='../grails-sub-three-plugin'
+</code></pre>
+<p>That means I
 <a href="http://comments.gmane.org/gmane.comp.lang.groovy.grails.user/135551">cannot use the dependencies</a>
-DSL. The whole thing is further complicated in that I&#39;m actually doing the
+DSL. The whole thing is further complicated in that I'm actually doing the
 same thing with JodaTime, in order to use my own patch that updates the
 JodaTime JAR and Grails version of that plugin.</p>
-<h2 id="references">References</h2>
+<h2>References</h2>
 <ul>
 <li><a href="http://grails.1312388.n4.nabble.com/The-following-plugins-failed-to-load-due-to-missing-dependencies-but-the-dependency-is-loaded-td3383081.html">grails-user post</a> about dashes vs. camelCase</li>
 <li><a href="http://stackoverflow.com/questions/12317370/dependencies-of-grails-plugins">SO admonition</a> against dependsOn</li>

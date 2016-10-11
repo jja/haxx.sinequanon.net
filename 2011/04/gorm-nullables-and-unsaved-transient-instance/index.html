@@ -44,24 +44,26 @@
         <p>I have nullable one-to-many relations in Grails/GORM and started getting
 &quot;object references an unsaved transient instance&quot; exceptions from Hibernate.
 In the Grails forms, selecting a blank/no-selection value for the field sent
-<code>params.myOtherObject.id==&#39;&#39;</code>. GORM then tries to create a new empty object
+<code>params.myOtherObject.id==''</code>. GORM then tries to create a new empty object
 and during the <code>save(flush:true)</code>, it complains with the exception:</p>
 <!-- more -->
 <pre><code>org.hibernate.TransientObjectException: object references an unsaved
 transient instance - save the transient instance before flushing: MyOtherClass
-</code></pre><p>This
+</code></pre>
+<p>This
 <a href="http://stackoverflow.com/questions/4810574/grails-gorm-object-references-an-unsaved-transient-instance/4833693#4833693">stackoverflow answer</a>
 gave me the clue about params and I now remove the nullable field from
-<code>params</code> when it&#39;s blank.</p>
+<code>params</code> when it's blank.</p>
 <pre><code>def myObject = MyClass.get(params.id)
-if (null == params.myOtherObject.id || &#39;&#39; == params.myOtherObject.id) {
+if (null == params.myOtherObject.id || '' == params.myOtherObject.id) {
         myObject.myOtherObject = null
-        params.remove(&#39;myOtherObject&#39;)
+        params.remove('myOtherObject')
         }
 myObject.properties = params
 if (!myObject.hasErrors() &amp;&amp; myObject.save(flush: true)) {
 ...
-</code></pre><h2 id="comments">Comments</h2>
+</code></pre>
+<h2>Comments</h2>
 <p>mamram commented at 2011-07-02 10:04:01</p>
 <p>thanks, params.remove() was the trick...</p>
 

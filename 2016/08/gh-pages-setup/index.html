@@ -35,16 +35,16 @@
 
       <section id="post_content">
 
-        <p>I&#39;ve moved this blog (perhaps only temporarily) to a
+        <p>I've moved this blog (perhaps only temporarily) to a
 <a href="http://metalsmith.io/">Metalsmith</a>
 generated static site served via my
 <a href="https://github.com/jja/haxx.sinequanon.net">GitHub pages repo</a>.
 Here are some notes on how to setup git clones
 with the <code>gh-pages</code> branch in the build directory,
-based upon krlmlr&#39;s answer at
+based upon krlmlr's answer at
 <a href="http://stackoverflow.com/questions/26120163/how-to-properly-commit-in-repository-with-github-pages-branch/29616287#29616287">stackoverflow</a>.</p>
 <!-- more -->
-<h2 id="prerequisites">Prerequisites</h2>
+<h2>Prerequisites</h2>
 <p>I started from the
 <a href="https://github.com/metalsmith/metalsmith/tree/master/examples/static-site">Metalsmith static-site</a>
 example, with the <code>build</code> directory in
@@ -52,28 +52,32 @@ example, with the <code>build</code> directory in
 <pre><code># .gitignore
 /build
 /node_modules
-</code></pre><h2 id="initial-setup">Initial setup</h2>
+</code></pre>
+<h2>Initial setup</h2>
 <p>Clone the site repo:</p>
 <pre><code>$ git clone git@github.com:myuser/myrepo.git
-Cloning into &#39;myrepo&#39;...
+Cloning into 'myrepo'...
 ... done.
 $ cd myrepo
-</code></pre><p>Sanity check:</p>
+</code></pre>
+<p>Sanity check:</p>
 <pre><code>$ git checkout master
-Already on &#39;master&#39;
-Your branch is up-to-date with &#39;origin/master&#39;.
-</code></pre><p>Setup the build directory to be the <code>gh-pages</code> branch:</p>
+Already on 'master'
+Your branch is up-to-date with 'origin/master'.
+</code></pre>
+<p>Setup the build directory to be the <code>gh-pages</code> branch:</p>
 <pre><code>$ rm -rf build
 $ git clone . build
-Cloning into &#39;build&#39;...
+Cloning into 'build'...
 done.
 $ cd build
 $ git checkout --orphan gh-pages
-Switched to a new branch &#39;gh-pages&#39;
+Switched to a new branch 'gh-pages'
 $ git reset --hard
-$ git commit --allow-empty -m &#39;initial build commit&#39;
+$ git commit --allow-empty -m 'initial build commit'
 [gh-pages (root-commit) 736d806] initial build commit
-</code></pre><p>and add it to the main repo clone:</p>
+</code></pre>
+<p>and add it to the main repo clone:</p>
 <pre><code>$ git push origin -u gh-pages
 Counting objects: 2, done.
 Writing objects: 100% (2/2), 172 bytes | 0 bytes/s, done.
@@ -81,11 +85,12 @@ Total 2 (delta 0), reused 0 (delta 0)
 To /path/to/myrepo/.
 * [new branch]      gh-pages -&gt; gh-pages
 Branch gh-pages set up to track remote branch gh-pages from origin.
-</code></pre><p>The build directory should know only about <code>gh-pages</code>.
+</code></pre>
+<p>The build directory should know only about <code>gh-pages</code>.
 Delete all other branches, especially <code>master</code>:</p>
 <pre><code>$ git branch -d master
-warning: deleting branch &#39;master&#39; that has been merged to
-        &#39;refs/remotes/origin/master&#39;, but not yet merged to HEAD.
+warning: deleting branch 'master' that has been merged to
+        'refs/remotes/origin/master', but not yet merged to HEAD.
 Deleted branch master (was 1d70874).
 $ git remote set-head origin gh-pages
 $ git remote set-branches origin gh-pages
@@ -101,12 +106,13 @@ $ cat .git/config
 [branch &quot;gh-pages&quot;]
     remote = origin
     merge = refs/heads/gh-pages
-</code></pre><p>Add initial site build to <code>gh-pages</code>:</p>
+</code></pre>
+<p>Add initial site build to <code>gh-pages</code>:</p>
 <pre><code>$ cd ..
 $ make
 $ cd build
 $ git add .
-$ git commit -m &#39;initial site build&#39;
+$ git commit -m 'initial site build'
 [gh-pages fd4fc2a] initial site build
 76 files changed, 6727 insertions(+)
 create mode 100644 .nojekyll
@@ -119,7 +125,8 @@ Writing objects: 100% (182/182), 89.41 KiB | 0 bytes/s, done.
 Total 182 (delta 31), reused 0 (delta 0)
 To /path/to/myrepo/.
    736d806..fd4fc2a  gh-pages -&gt; gh-pages
-</code></pre><p>Add <code>gh-pages</code> to GitHub:</p>
+</code></pre>
+<p>Add <code>gh-pages</code> to GitHub:</p>
 <pre><code>$ cd ..     # aka /path/to/myrepo
 $ git push origin -u gh-pages gh-pages
 Counting objects: 184, done.
@@ -130,13 +137,15 @@ Total 184 (delta 31), reused 182 (delta 31)
 To git@github.com:jja/haxx.sinequanon.net.git
 * [new branch]      gh-pages -&gt; gh-pages
 Branch gh-pages set up to track remote branch gh-pages from origin.
-</code></pre><p>Setup both (all) branches to push automatically:</p>
+</code></pre>
+<p>Setup both (all) branches to push automatically:</p>
 <pre><code>$ git config push.default matching
-</code></pre><p>Sanity check:</p>
+</code></pre>
+<p>Sanity check:</p>
 <pre><code>$ cd /path/to/myrepo
 $ git checkout master
-Already on &#39;master&#39;
-Your branch is up-to-date with &#39;origin/master&#39;.
+Already on 'master'
+Your branch is up-to-date with 'origin/master'.
 $ git branch
 gh-pages
 * master
@@ -157,7 +166,8 @@ $ cat .git/config
     merge = refs/heads/gh-pages
 [push]
     default = matching
-</code></pre><h2 id="future-workflow">Future workflow</h2>
+</code></pre>
+<h2>Future workflow</h2>
 <p>Committing in the main directory adds site source changes
 to the <code>master</code> branch.
 Committing in the <code>build</code> directory adds the generated
@@ -169,7 +179,7 @@ Pushing from the main directory sends it all to GitHub
 for serving (i.e. publishes or installs the site).</p>
 <p>All this can be done in either of two sequences.
 Committing the build (<code>gh-pages</code>) first feels backwards
-but let&#39;s us use the <code>-C</code> option for <code>git-commit</code> which
+but let's us use the <code>-C</code> option for <code>git-commit</code> which
 re-uses the same message and timestamp, which is nice.</p>
 <pre><code>$ cd /path/to/myrepo
 $ vi ...
@@ -182,7 +192,8 @@ $ cd ..
 $ git add ...
 $ git commit [-a] [-C `cat .git/refs/heads/gh-pages`]
 $ git push
-</code></pre><p>While committing the source (<code>master</code>) first will
+</code></pre>
+<p>While committing the source (<code>master</code>) first will
 produce a different timestamp on the <code>gh-pages</code> commit,
 but we should be able to steal the message for automation.</p>
 <pre><code>$ cd /path/to/myrepo
@@ -196,13 +207,14 @@ $ git commit -a [-m &quot;`cat ../.git/COMMIT_EDITMSG`&quot;]
 $ git push
 $ cd ..
 $ git push
-</code></pre><p>I have some <code>make install</code> targets for both above workflows
-which I&#39;ll commit after some testing (currently on the
+</code></pre>
+<p>I have some <code>make install</code> targets for both above workflows
+which I'll commit after some testing (currently on the
 <a href="https://github.com/jja/haxx.sinequanon.net/tree/feature/make-install"><code>feature/make-install</code></a>
 branch).</p>
-<h2 id="comments">Comments</h2>
+<h2>Comments</h2>
 <p>I hope that helps.
-I don&#39;t have a commenting service (yet?) for the static site,
+I don't have a commenting service (yet?) for the static site,
 so please email comments or suggestions
 (see the <a href="/about/">About</a> page), or comment in a
 <a href="https://github.com/jja/haxx.sinequanon.net/issues/1">GitHub issue</a>.

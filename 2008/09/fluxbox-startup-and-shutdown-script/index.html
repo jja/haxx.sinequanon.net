@@ -44,7 +44,7 @@ position/decoration settings or puts the programs in the slit. Running apps
 after Fluxbox finishes is useful to cleanup things that were started earlier.
 The example startup file given below covers both situations.</p>
 <!-- more -->
-<h2 id="starting-apps-after-fluxbox-starts">Starting apps after Fluxbox starts</h2>
+<h2>Starting apps after Fluxbox starts</h2>
 <p>The <a href="http://fluxbox-wiki.org/index.php/Fluxbox-wiki">Fluxbox-wiki</a>
 has a description of how to
 <a href="http://fluxbox-wiki.org/index.php/Editing_the_startup_file">edit the startup file</a>.
@@ -54,17 +54,17 @@ with an example startup file that has a bug. Remove the word <code>exec</code> o
 line <code>exec fluxbox &amp;</code>. Also, the <code>{</code> and <code>} &amp;</code> are unnecessary. (I wanted to
 edit the wiki, but there is no way to create an account, much less get
 permission to edit.)</p>
-<h2 id="running-apps-after-fluxbox-finishes">Running apps after Fluxbox finishes</h2>
+<h2>Running apps after Fluxbox finishes</h2>
 <p>To run apps after Fluxbox has finished, simply add them to the end of the
 startup file (after <code>wait $fbpid</code>). Do not use the ampersand (<code>&amp;</code>) on the end
 of the line, as that will potentially leave the apps running after you logout.
 You want only short, cleanup-style apps here.</p>
-<h2 id="example">Example</h2>
+<h2>Example</h2>
 <p>Here is my startup file that accomplishes all the tasks described.</p>
 <pre><code>#!/bin/sh
 # this file is ~/.fluxbox/startup
 #
-# Lines starting with a &#39;#&#39; are ignored.
+# Lines starting with a '#' are ignored.
 
 # Configurations and setups
 fbsetroot -solid gray
@@ -103,15 +103,16 @@ wait $fbpid
 fbstatus=$?
 
 # Applications to perform cleanup after fluxbox has finished
-# DON&#39;T USE &amp; HERE OR THE APP MAY KEEP RUNNING AFTER YOU LOGOUT
-# THESE APPS SHOULD END FAST; YOU WON&#39;T LOGOUT UNTIL THEY&#39;RE DONE
+# DON'T USE &amp; HERE OR THE APP MAY KEEP RUNNING AFTER YOU LOGOUT
+# THESE APPS SHOULD END FAST; YOU WON'T LOGOUT UNTIL THEY'RE DONE
 #
 # make sure music has stopped
 xmms2 stop
 
-# exit with fluxbox&#39;s exit status
+# exit with fluxbox's exit status
 exit $fbstatus
-</code></pre><p>(end)</p>
+</code></pre>
+<p>(end)</p>
 
 
       </section>

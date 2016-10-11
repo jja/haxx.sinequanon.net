@@ -39,74 +39,81 @@
       <section id="post_content">
 
         <p>The default generated error.gsp view in Grails displays the stacktrace for any
-exceptions that occur. That&#39;s nice for debugging in a development environment
+exceptions that occur. That's nice for debugging in a development environment
 but it is a security issue for production as it is
 <a href="http://www.owasp.org/index.php/Error_Handling">information leakage</a>.
 We can easily turn this off when not in development, and do something useful
 like redirect to the application homepage.</p>
 <!-- more -->
-<h2 id="isdevelopmentenv">isDevelopmentEnv</h2>
+<h2>isDevelopmentEnv</h2>
 <p>The key piece is knowing when we are in the development environment.
 This is mentioned briefly
 <a href="http://grails.org/doc/1.0.3/guide/3.%20Configuration.html#3.2%20Environments">in the docs</a>---
 follow the <a href="http://grails.org/doc/1.0.3/api/grails/util/GrailsUtil.html">api link</a>
 for full details:</p>
 <pre><code>GrailsUtil.isDevelopmentEnv()
-</code></pre><p>We can use this is in a <code>g:if</code> test to wrap the html in the <code>error.gsp</code> view:</p>
+</code></pre>
+<p>We can use this is in a <code>g:if</code> test to wrap the html in the <code>error.gsp</code> view:</p>
 <pre><code>&lt;html&gt;
 &lt;g:if test=&quot;${GrailsUtil.isDevelopmentEnv()}&quot;&gt;
     &lt;head&gt;
         &lt;title&gt;Grails Runtime Exception&lt;/title&gt;
 &lt;/g:if&gt;
 ...
-</code></pre><h2 id="else">Else</h2>
+</code></pre>
+<h2>Else</h2>
 <p>If we are in production (or test) mode, then we may want to display a generic,
 secure error message and redirect to the application homepage (or any page):</p>
 <pre><code>&lt;head&gt;
-&lt;% flash.message=&#39;System error occurred.&#39; %&gt;
-&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0;url=&lt;g:createLinkTo dir=&#39;/&#39; /&gt;&quot;&gt;
+&lt;% flash.message='System error occurred.' %&gt;
+&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0;url=&lt;g:createLinkTo dir='/' /&gt;&quot;&gt;
 &lt;/head&gt;
 &lt;body&gt;
 &lt;/body&gt;
-</code></pre><p>The <code>createLinkTo</code> with a directory of <code>/</code> makes a link to the application
+</code></pre>
+<p>The <code>createLinkTo</code> with a directory of <code>/</code> makes a link to the application
 homepage. Play around with this tag (or <code>createLink</code>), including the
-<code>absolute=&#39;true&#39;</code> attribute (hint: set <code>grails.serverURL</code> in
+<code>absolute='true'</code> attribute (hint: set <code>grails.serverURL</code> in
 <code>grails-app/conf/Config.groovy</code>). We might want to put the generic message and
-link in the body section too, just in case the user&#39;s browser doesn&#39;t
-redirect. Warning: don&#39;t add in sitemesh layouts or too much code in the
+link in the body section too, just in case the user's browser doesn't
+redirect. Warning: don't add in sitemesh layouts or too much code in the
 createLinkTo tag. If that code generates an exception, it will throw the user
 into an infinite loop.</p>
-<h2 id="bugs">Bugs</h2>
+<h2>Bugs</h2>
 <p>If an exception occurs in a view that has changed the content type, then the
 error view will be labelled with that content type. We need to change it back
 to HTML to be sure the error message displays in the browser (or the redirect
 happens). In one of my projects, I had a gsp view generating XML. An exception
 in the middle of this produced an error message but the browser thought it was
-(malformed) XML and wouldn&#39;t display it. So we need to reset the content at
+(malformed) XML and wouldn't display it. So we need to reset the content at
 the top:</p>
 <pre><code>&lt;% response.contentType = &quot;text/html&quot; %&gt;
-</code></pre><h2 id="example">Example</h2>
+</code></pre>
+<h2>Example</h2>
 <p>Attached is a complete example, modified from the Grails 1.0.3 generated file
 <code>grails-app/views/error.gsp</code> (other versions of Grails will look slightly
 different in the middle):
 <a href="/wp-content/uploads/2008/09/error.txt">error.gsp</a></p>
-<h2 id="updates">Updates</h2>
+<h2>Updates</h2>
 <p>In 1.1, <code>g:if</code> with the <code>env</code> attribute is working, so you can use:</p>
 <pre><code>&lt;g:if env=&quot;development&quot;&gt;
-</code></pre><p>for the test:
+</code></pre>
+<p>for the test:
 <a href="/wp-content/uploads/2008/10/error_11.txt">error_11.gsp</a>
 (install as <code>grails-app/views/error.gsp</code>)</p>
 <p>In 1.2, the <code>createLinkTo</code> tag has been deprecated in favor of <code>resource</code>,
 prompting one small change to the error.gsp file:
 <a href="/wp-content/uploads/2009/10/error12.txt">error12.gsp</a></p>
-<p>Grails 2.3.x doesn&#39;t like the <code>g:resource tag</code> nested inside the quotes of the
+<p>Grails 2.3.x doesn't like the <code>g:resource tag</code> nested inside the quotes of the
 meta tag, generating a GrailsTagException with the message &quot;Attribute value
-quote wasn&#39;t closed&quot;. Use a string expression:</p>
-<pre><code>&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0;url=${g.resource(dir:&#39;/&#39;)}&quot;&gt;
-</code></pre><p>There&#39;s also now an undocumented <code>renderException</code> tag you can try out, though
+quote wasn't closed&quot;. Use a string expression:</p>
+<pre><code>&lt;meta http-equiv=&quot;Refresh&quot; content=&quot;0;url=${g.resource(dir:'/')}&quot;&gt;
+</code></pre>
+<p>There's also now an undocumented <code>renderException</code> tag you can try out, though
 it just moves some stuff from the default <code>errors.gsp</code> into a tag:</p>
 <pre><code>&lt;g:renderException exception=&quot;${exception}&quot; /&gt;
 </code></pre>
+
 
       </section>
 

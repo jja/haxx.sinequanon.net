@@ -38,7 +38,7 @@
 
       <section id="post_content">
 
-        <p>Here&#39;s how to setup scheduled (periodic or timed) tasks with Spring3
+        <p>Here's how to setup scheduled (periodic or timed) tasks with Spring3
 in Grails using the concurrency executors introduced in Java5.
 This replaces the use of a Spring2 <code>TimerTask</code> which was deprecated in
 Spring3 and removed from Spring4. Grails2 uses Spring3 so
@@ -56,8 +56,8 @@ on Spring2 TimerTask usage in Grails1.</p>
 <code>grails-app/conf/spring/resources.groovy</code>
 (following/updated from henyo):</p>
 <pre><code>myInvoker(org.springframework.scheduling.support.MethodInvokingRunnable) {
-    targetObject = ref(&#39;myService&#39;)
-    targetMethod = &#39;myMethod&#39;
+    targetObject = ref('myService')
+    targetMethod = 'myMethod'
 }
 
 myScheduler(org.springframework.scheduling.concurrent.ScheduledExecutorTask) {
@@ -65,13 +65,14 @@ myScheduler(org.springframework.scheduling.concurrent.ScheduledExecutorTask) {
     // milliseconds, 600000ms = 10min
     delay = grailsApplication.config.mykey.delay ?: 600000
     period = grailsApplication.config.mykey.period ?: 600000
-    runnable = ref(&#39;myInvoker&#39;)
+    runnable = ref('myInvoker')
 }
 
 myFactory(org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean) {
-    scheduledExecutorTasks = [ref(&#39;myScheduler&#39;)]
+    scheduledExecutorTasks = [ref('myScheduler')]
 }
-</code></pre><p>Then of course you will need a <code>myService</code> class with a <code>myMethod</code> method
+</code></pre>
+<p>Then of course you will need a <code>myService</code> class with a <code>myMethod</code> method
 that takes no arguments.</p>
 
 

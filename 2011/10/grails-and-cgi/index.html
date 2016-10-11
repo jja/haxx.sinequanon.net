@@ -38,16 +38,18 @@
 
       <section id="post_content">
 
-        <p>Here&#39;s how to get CGI working in a Grails app.</p>
+        <p>Here's how to get CGI working in a Grails app.</p>
 <!-- more -->
 <p>Install a copy of web.xml:</p>
 <pre><code>grails install-templates
-</code></pre><p>then edit it:</p>
+</code></pre>
+<p>then edit it:</p>
 <pre><code>src/templates/war/web.xml
-</code></pre><p>adding these elements in their appropriate sections. Some other instructions
-and the Tomcat encourage you to edit the main Tomcat web.xml, but that won&#39;t
+</code></pre>
+<p>adding these elements in their appropriate sections. Some other instructions
+and the Tomcat encourage you to edit the main Tomcat web.xml, but that won't
 help you in development mode with <code>grails run-app</code> and also adds CGIs to all
-other webapps (if they&#39;re privileged).</p>
+other webapps (if they're privileged).</p>
 <p>First the servlet (there are other configurable parameters available):</p>
 <pre><code>    &lt;!-- Common Gateway Interface (CGI) processing servlet --&gt;
     &lt;servlet&gt;
@@ -63,20 +65,23 @@ other webapps (if they&#39;re privileged).</p>
         &lt;/init-param&gt;
         &lt;load-on-startup&gt;5&lt;/load-on-startup&gt;
     &lt;/servlet&gt;
-</code></pre><p>and the servlet-mapping:</p>
+</code></pre>
+<p>and the servlet-mapping:</p>
 <pre><code>    &lt;!-- The mapping for the CGI Gateway servlet --&gt;
     &lt;servlet-mapping&gt;
         &lt;servlet-name&gt;cgi&lt;/servlet-name&gt;
         &lt;url-pattern&gt;/cgi-bin/*&lt;/url-pattern&gt;
     &lt;/servlet-mapping&gt;
-</code></pre><p>Here&#39;s the secret part. Edit <code>scripts/Events.groovy</code> to make your webapp
+</code></pre>
+<p>Here's the secret part. Edit <code>scripts/Events.groovy</code> to make your webapp
 privileged:</p>
 <pre><code>eventConfigureTomcat = { tomcat -&gt;
     def ctx=tomcat.host.findChild(serverContextPath)
     ctx.privileged = true
 }
-</code></pre><p>Then put your CGI script in <code>web-app/WEB-INF/cgi/</code></p>
-<h2 id="references">References</h2>
+</code></pre>
+<p>Then put your CGI script in <code>web-app/WEB-INF/cgi/</code></p>
+<h2>References</h2>
 <ul>
 <li><a href="http://tomcat.apache.org/tomcat-6.0-doc/cgi-howto.html">official Tomcat docs</a></li>
 <li><a href="http://grails.1312388.n4.nabble.com/tomcat-plugin-where-is-server-xml-and-tomcat-users-xml-td1322273.html">Grails-user post discussing Tomcat config</a></li>

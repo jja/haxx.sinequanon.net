@@ -51,10 +51,10 @@ bottom of <code>grails-app/conf/Config.groovy</code>:</p>
     }
   }
 }
-</code></pre><p>Info on other versions continues below.</p>
+</code></pre>
+<p>Info on other versions continues below.</p>
 <!-- more -->
-<p>With Grails 1.0.3 and 1.0.4, the above will produce an error message like <code>No
-such property: context for class: java.lang.String</code></p>
+<p>With Grails 1.0.3 and 1.0.4, the above will produce an error message like <code>No such property: context for class: java.lang.String</code></p>
 <p>For 1.0.3 and 1.0.4, use this:</p>
 <pre><code>environments {
   development {
@@ -67,12 +67,13 @@ such property: context for class: java.lang.String</code></p>
     }
   }
 }
-</code></pre><p>In your code, simply use <code>log.debug(&quot;my message&quot;)</code></p>
+</code></pre>
+<p>In your code, simply use <code>log.debug(&quot;my message&quot;)</code></p>
 <p>Thanks to the grails-user mailing list for
 <a href="http://www.nabble.com/1.0.3---No-such-property:-context-for-class:-java.lang.String-td18515263.html">a clue</a>
 towards this.</p>
-<p>Update: I&#39;ve been working through all this again for 1.0.4 and 1.1. I added a
-commented line for 1.0.2 that I&#39;m now needing to include, although it
+<p>Update: I've been working through all this again for 1.0.4 and 1.1. I added a
+commented line for 1.0.2 that I'm now needing to include, although it
 unfortunately doubles the output.</p>
 <p>Unfortunately, the 1.0.3/4 method does not work in 1.1. After upgrading, you
 need to change the extra logging snippet even if you leave the standard
@@ -80,11 +81,12 @@ logging section in the old format. For 1.1:</p>
 <pre><code>environments {
   development {
     log4j = {
-      debug &#39;grails.app&#39;
+      debug 'grails.app'
     }
   }
 }
-</code></pre><p>Also note that one could add the grails.app config lines in the middle of the
+</code></pre>
+<p>Also note that one could add the grails.app config lines in the middle of the
 regular log4j configuration section, but the examples given illustrate how to
 have different log levels in different environments, e.g. debug messages in
 development mode and only error messages in production.</p>

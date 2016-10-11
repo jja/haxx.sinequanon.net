@@ -41,36 +41,39 @@
 
       <section id="post_content">
 
-        <p>Here&#39;s an info dump of some things I did to get Linux aspell-based spell
+        <p>Here's an info dump of some things I did to get Linux aspell-based spell
 checking working with the Grails CKEditor plugin.</p>
 <!-- more -->
 <p>File <code>grails-app/conf/Config.groovy</code></p>
 <pre><code>ckeditor {
     config = &quot;/js/ckeditor/ckconfig.gsp&quot; // CKEDITOR.config.customConfig ; note the gsp extension
     }
-</code></pre><p>File <code>web-app/js/ckeditor/ckconfig.gsp</code></p>
+</code></pre>
+<p>File <code>web-app/js/ckeditor/ckconfig.gsp</code></p>
 <pre><code>&lt;%@ page contentType=&quot;text/javascript&quot; %&gt;
 // http://grails.1312388.n4.nabble.com/ckeditor-custom-plugins-tp2717404p2718562.html
-//CKEDITOR.plugins.addExternal(&#39;aspell&#39;, &#39;${request.contextPath}/js/ckeditor/plugins/aspell/&#39;);
-CKEDITOR.plugins.addExternal(&#39;aspell&#39;, &#39;${resource(dir:&quot;js/ckeditor/plugins/aspell/&quot;)}&#39;);
+//CKEDITOR.plugins.addExternal('aspell', '${request.contextPath}/js/ckeditor/plugins/aspell/');
+CKEDITOR.plugins.addExternal('aspell', '${resource(dir:&quot;js/ckeditor/plugins/aspell/&quot;)}');
 CKEDITOR.editorConfig = function( config )
 {
-    config.removePlugins = &#39;filebrowser,ofm,flash,save,font&#39;;
-    config.extraPlugins = &#39;aspell&#39;;
+    config.removePlugins = 'filebrowser,ofm,flash,save,font';
+    config.extraPlugins = 'aspell';
     config.toolbar_zinc =
             [
-                { name: &#39;document&#39;, items : [ &#39;Bold&#39;, &#39;Italic&#39;, &#39;NumberedList&#39;, &#39;BulletedList&#39;, &#39;Blockquote&#39;, &#39;Subscript&#39;, &#39;Superscript&#39;, &#39;SpecialChar&#39;, &#39;-&#39;, &#39;RemoveFormat&#39; ] },
-                { name: &#39;tools&#39;, items : [ &#39;Source&#39;, &#39;ShowBlocks&#39;, &#39;-&#39;, &#39;About&#39;, &#39;Maximize&#39; ] },
-                &#39;/&#39;,
-                { name: &#39;clipboard&#39;, items : [ &#39;Cut&#39;, &#39;Copy&#39;, &#39;Paste&#39;, &#39;PasteText&#39;, &#39;PasteFromWord&#39;, &#39;-&#39;, &#39;Undo&#39;, &#39;Redo&#39; ] },
-                { name: &#39;editing&#39;, items : [ &#39;Find&#39;, &#39;Replace&#39;, &#39;-&#39;, &#39;SelectAll&#39;, &#39;-&#39;, &#39;SpellCheck&#39; ] },
+                { name: 'document', items : [ 'Bold', 'Italic', 'NumberedList', 'BulletedList', 'Blockquote', 'Subscript', 'Superscript', 'SpecialChar', '-', 'RemoveFormat' ] },
+                { name: 'tools', items : [ 'Source', 'ShowBlocks', '-', 'About', 'Maximize' ] },
+                '/',
+                { name: 'clipboard', items : [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+                { name: 'editing', items : [ 'Find', 'Replace', '-', 'SelectAll', '-', 'SpellCheck' ] },
             ]
 };
-</code></pre><p>Get aspell.7z, system pacakges aspell and aspell-en (or your language), and
+</code></pre>
+<p>Get aspell.7z, system pacakges aspell and aspell-en (or your language), and
 CKEditor plugin aspell. Add the following:</p>
 <p>File <code>web-app/js/ckeditor/plugins/aspell/dialogs/aspell.js</code></p>
-<pre><code>oSpeller.spellCheckScript = editor.plugins.aspell.path+&#39;spellerpages/server-scripts/spellchecker.jsp&#39;;
-</code></pre><p>File <code>web-app/js/ckeditor/plugins/aspell/spellerpages/server-scripts/spellchecker.jsp</code>
+<pre><code>oSpeller.spellCheckScript = editor.plugins.aspell.path+'spellerpages/server-scripts/spellchecker.jsp';
+</code></pre>
+<p>File <code>web-app/js/ckeditor/plugins/aspell/spellerpages/server-scripts/spellchecker.jsp</code>
 is documented in <a href="/2011/10/ckeditor-spellchecker-jsp/">another post about spellchecker</a></p>
 
 

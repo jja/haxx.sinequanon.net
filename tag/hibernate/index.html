@@ -23,7 +23,7 @@
             2011-04-05          <p>I have nullable one-to-many relations in Grails/GORM and started getting
   &quot;object references an unsaved transient instance&quot; exceptions from Hibernate.
   In the Grails forms, selecting a blank/no-selection value for the field sent
-  <code>params.myOtherObject.id==&#39;&#39;</code>. GORM then tries to create a new empty object
+  <code>params.myOtherObject.id==''</code>. GORM then tries to create a new empty object
   and during the <code>save(flush:true)</code>, it complains with the exception:</p>
             <a href="/2011/04/gorm-nullables-and-unsaved-transient-instance">(read more)</a>
           </li>

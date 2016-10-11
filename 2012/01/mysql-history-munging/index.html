@@ -39,21 +39,22 @@
 home directory is a network mount and thus my .mysql_history file is shared
 between all these hosts. Often the command history gets weirdly munged, with
 spaces converted to <code>\040</code> -- the character sequence for the octal escape code
-for ASCII space. Here&#39;s a little workaround/fix:</p>
+for ASCII space. Here's a little workaround/fix:</p>
 <!-- more -->
-<pre><code>/bin/sed &#39;s/\040/ /g;&#39; ~/.mysql_history &gt; ~/.mysql_history.space
+<pre><code>/bin/sed 's/\040/ /g;' ~/.mysql_history &gt; ~/.mysql_history.space
 
 /bin/mv -f ~/.mysql_history.space ~/.mysql_history
-</code></pre><p>Make that into an alias or script. Just make sure you quit all instances of
+</code></pre>
+<p>Make that into an alias or script. Just make sure you quit all instances of
 the mysql client before running. Then when you restart, the history should get
 reloaded correctly.</p>
-<p>I haven&#39;t bothered to figure out why this is happening, i.e. what the version
+<p>I haven't bothered to figure out why this is happening, i.e. what the version
 problems are or 32/64 bit or readline/editline or the sequence of starting
 multiple clients on multiple hosts...</p>
-<h2 id="comments">Comments</h2>
+<h2>Comments</h2>
 <p><a href="http://guilhembichot.blogspot.co.uk/">Guilhem Bichot</a> commented at 2012-09-12 02:33:09</p>
 <p>Happend to me too. In my case, I have 2 terminals open, one with a 5.1 mysql command line client (linked with readline), one with a 5.6 mysql command line client (linked with  libedit).
-So when I close 5.6 client, libedit writes history file with escaping of &#39; &#39; to 040, then I open 5.1 client whose readline reads 040 and shows it...
+So when I close 5.6 client, libedit writes history file with escaping of ' ' to 040, then I open 5.1 client whose readline reads 040 and shows it...
 Fix: use new clients.</p>
 <hr>
 <p><a href="http://haxx.sinequanon.net/">jja</a> commented at 2012-09-12 11:25:15</p>
