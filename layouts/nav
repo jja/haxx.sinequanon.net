@@ -1,10 +1,10 @@
 <section id="nav">
-    {{#if pagination.previous}}
-        <a class="footer-span plain" href="/{{pagination.previous.path}}">Newer</a>
-    {{/if}}
-
     {{#if pagination.next}}
         <a class="footer-span plain" href="/{{pagination.next.path}}">Older</a>
+    {{/if}}
+
+    {{#if pagination.previous}}
+        <a class="footer-span plain" href="/{{pagination.previous.path}}">Newer</a>
     {{/if}}
 </section>
 
