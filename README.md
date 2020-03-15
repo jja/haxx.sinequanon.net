@@ -1,4 +1,4 @@
-# haxx qua non
+# haxx populi
 
 Source for haxx.sinequanon.net website using 
 [metalsmith](http://metalsmith.io/)
