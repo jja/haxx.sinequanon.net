@@ -170,7 +170,7 @@ for serving (i.e. publishes or installs the site).
 
 All this can be done in either of two sequences.
 Committing the build (`gh-pages`) first feels backwards
-but let's us use the `-C` option for `git-commit` which
+but lets us use the `-C` option for `git-commit` which
 re-uses the same message and timestamp, which is nice.
 
     $ cd /path/to/myrepo
