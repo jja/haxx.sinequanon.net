@@ -15,7 +15,7 @@ Handlebars.registerHelper('dateFormat', require('handlebars-dateformat'));
 
 var ms = Metalsmith(__dirname)
   .metadata({
-    sitetitle: "haxx qua non",
+    sitetitle: "haxx populi",
     sitedescription: "tips and tricks from a working coder",
     siteurl: "http://haxx.sinequanon.net/"
   })
