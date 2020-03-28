@@ -19,6 +19,6 @@
     "metalsmith-permalinks": "^2.2.0",
     "metalsmith-serve": "^0.0.7",
     "metalsmith-tags": "^1.2.1",
-    "minimist": "0.2.1"
+    "minimist": "1.2.2"
   }
 }
