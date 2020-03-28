@@ -1,13 +1,21 @@
 all: build
 
-build: node_modules
+build: .npm-installed
 	node index.js
 
-run: node_modules
+run: .npm-installed
 	node index.js --run
 
-node_modules: package.json
+npm:
 	npm install
+
+.npm-installed: package-lock.json
+	touch .npm-installed
+
+package-lock.json: package.json
+	npm install
+
+package.json:
 
 .PHONY: build
 
