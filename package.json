@@ -2,9 +2,6 @@
   "name": "haxx-sinequanon",
   "private": true,
   "//a": "WARNING: npm REWRITES THIS FILE!!!1!",
-  "//b": "metalsmith-markdown-remarkable 1.0.1 brings a BREAKING INCOMPATIBLE change to remarkable 2.0.0 !!!",
-  "//c": "supposedly for security, but npm correctly gets the fix (see remarkable=1.7.4 in package-lock.json)",
-  "//d": "minimist is a transitive dependency from handlebars that npm complains about security, but won't fix, we must also manually edit package-lock.json EVERY TIME we run 'npm install'",
   "dependencies": {
     "handlebars": "^4.7.4",
     "handlebars-dateformat": "^1.1.1",
@@ -17,8 +14,6 @@
     "metalsmith-more": "^0.2.0",
     "metalsmith-pagination": "^1.4.0",
     "metalsmith-permalinks": "^2.2.0",
-    "metalsmith-serve": "^0.0.7",
-    "metalsmith-tags": "^1.2.1",
-    "minimist": "0.2.1"
+    "metalsmith-tags": "^1.2.1"
   }
 }
