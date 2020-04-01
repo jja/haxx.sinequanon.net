@@ -2,12 +2,12 @@ var Metalsmith  = require('metalsmith');
 var markdown    = require('metalsmith-markdown-remarkable');
 var layouts     = require('metalsmith-layouts');
 var permalinks  = require('metalsmith-permalinks');
-var serve       = require('metalsmith-serve');
 var assets      = require('metalsmith-assets-2');
 var pagination  = require('metalsmith-pagination');
 var collections = require('metalsmith-collections');
 var more        = require('metalsmith-more');
 var tags        = require('metalsmith-tags');
+var myserve     = require('./myserve');
 
 var Handlebars  = require('handlebars');
 
@@ -40,7 +40,6 @@ var ms = Metalsmith(__dirname)
   .use(permalinks({
     pattern: ':date/:slug',
     date: 'YYYY/MM',
-
     linksets: [{
       match: { layout: 'page' },
       pattern: ':slug',
@@ -71,7 +70,7 @@ var ms = Metalsmith(__dirname)
     destination: '.',
   }))
 
-  if ('--run' === process.argv[2]) { ms = ms.use(serve()); }
+  if ('--run' === process.argv[2]) { ms = ms.use(myserve()); }
 
   ms.build(function(err, files) {
     if (err) { throw err; }
