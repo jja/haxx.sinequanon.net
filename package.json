@@ -6,8 +6,8 @@
   "//c": "supposedly for security, but npm correctly gets the fix (see remarkable=1.7.4 in package-lock.json)",
   "//d": "minimist is a transitive dependency from handlebars that npm complains about security, but won't fix, we must also manually edit package-lock.json EVERY TIME we run 'npm install'",
   "dependencies": {
-    "handlebars": "^4.0.5",
-    "handlebars-dateformat": "^1.0.1",
+    "handlebars": "^4.7.4",
+    "handlebars-dateformat": "^1.1.1",
     "metalsmith": "^2.3.0",
     "metalsmith-assets-2": "2.0.0",
     "metalsmith-collections": "^0.9.0",
