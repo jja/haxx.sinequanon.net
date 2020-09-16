@@ -46,7 +46,7 @@ var serve = function(port, rootDir) {
 
       fs.stat(pathname, (err,stats) => {
         if (err && err.code === 'ENOENT') {
-          console.log
+          console.log("  file not found");
           res.statusCode = 404;
           res.end('Not found');
           return;
@@ -63,7 +63,7 @@ var serve = function(port, rootDir) {
             res.statusCode = 404;
             res.end('Not found');
           } else if (err) {
-            console.log(`Error getting the file: ${err}.`);
+            console.log(`  error reading the file: ${err}`);
             res.statusCode = 500;
             res.end('Error');
           } else {
@@ -76,7 +76,8 @@ var serve = function(port, rootDir) {
 
     }).listen(parseInt(port));
 
-    console.log("Now serving at http://localhost:"+port)
+    console.log("Now serving at http://localhost:"+port);
+    console.log("Use ^C to quit");
     nextstep();
   };
 

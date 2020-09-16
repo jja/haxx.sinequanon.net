@@ -4,7 +4,7 @@ build: .npm-installed
 	node index.js
 
 run: .npm-installed
-	node index.js --run
+	-node index.js --run
 
 npm:
 	npm install
