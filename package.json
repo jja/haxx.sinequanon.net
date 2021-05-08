@@ -3,7 +3,7 @@
   "private": true,
   "//a": "WARNING: npm REWRITES THIS FILE!!!1!",
   "dependencies": {
-    "handlebars": "^4.7.4",
+    "handlebars": "^4.7.7",
     "handlebars-dateformat": "^1.1.1",
     "metalsmith": "^2.3.0",
     "metalsmith-assets-2": "2.0.0",
